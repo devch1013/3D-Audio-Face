@@ -21,9 +21,9 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-from configs.config import cfg
-from models.flame import FLAME
-from utils.masking import Masking
+from ..configs.config import cfg
+from ..models.flame import FLAME
+from ..utils.masking import Masking
 
 
 class BaseModel(nn.Module):

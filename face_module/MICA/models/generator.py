@@ -19,7 +19,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as Functional
 
-from models.flame import FLAME
+from .flame import FLAME
 
 
 def kaiming_leaky_init(m):

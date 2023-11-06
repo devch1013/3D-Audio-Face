@@ -138,7 +138,7 @@ def load_checkpoint(args, mica):
 def MICA(cfg, args):
     device = args.device
     cfg.model.testing = True
-    mica = util.find_model_using_name(model_dir='MICA.micalib.models', model_name=cfg.model.name)(cfg, device)
+    mica = util.find_model_using_name(model_dir='face_module.MICA.micalib.models', model_name=cfg.model.name)(cfg, device)
     load_checkpoint(args, mica)
     mica.eval()
 

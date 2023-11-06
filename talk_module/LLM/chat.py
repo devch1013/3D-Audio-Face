@@ -5,7 +5,7 @@ from langchain.chains import ConversationChain
 from langchain.memory import ConversationBufferMemory
 
 
-ai_secret_file = "/home/ubuntu/3d_temp/LLM/keys.ini"
+ai_secret_file = "talk_module/LLM/keys.ini"
 config = configparser.ConfigParser()
 config.read(ai_secret_file)
 openai_api_key = config['OPENAI']['OPENAI_API_KEY']

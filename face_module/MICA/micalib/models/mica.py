@@ -24,9 +24,9 @@ sys.path.append("/home/ubuntu/3d_temp/MICA")
 import torch
 import torch.nn.functional as F
 
-from models.arcface import Arcface
-from models.generator import Generator
-from micalib.base_model import BaseModel
+from ...models.arcface import Arcface
+from ...models.generator import Generator
+from ...micalib.base_model import BaseModel
 
 from loguru import logger
 
