@@ -1,47 +1,32 @@
 import whisper
-import LLM
-from LLM.chat import ChatGPTConversation
+from conversation.LLM.chat import ChatGPTConversation
 import torch
-import torchaudio
 import librosa
-from pydub import AudioSegment
 import time
 import os
 os.chdir("/home/ubuntu/3d_temp")
 
-from EmoTalk_release.demo import load_STF, render_video
-from EmoTalk_release.demo import test as SpeechToFace
+from face_module.EmoTalk_release.demo import load_STF, render_video
+from face_module.EmoTalk_release.demo import test as SpeechToFace
 
 # from tortoise.api import TextToSpeech, MODELS_DIR
-from vits.TTS import TextToSpeech, load_TTS
+from conversation.vits.TTS import TextToSpeech, load_TTS
 
 import argparse
 import os
 import sys
 from scipy.io.wavfile import write
 
-from MICA.configs.config import get_cfg_defaults
-from MICA.datasets.creation.util import get_arcface_input, get_center, draw_on
-from MICA.utils import util
-from MICA.utils.landmark_detector import LandmarksDetector, detectors
-from MICA.MICA import MICA, deterministic, process, to_batch, process_single
+from face_module.MICA.configs.config import get_cfg_defaults
+from face_module.MICA.MICA import MICA, deterministic, process, to_batch, process_single
 
-import random
-from glob import glob
 from pathlib import Path
 
-import cv2
-import numpy as np
 import torch
-import torch.backends.cudnn as cudnn
 import trimesh
-from insightface.app.common import Face
-from insightface.utils import face_align
 from loguru import logger
-from skimage.io import imread
-from tqdm import tqdm
 
-from BlendShapeMaker.gui2cli import LDT
+from face_module.LDT.gui2cli import LDT
 
 # sys.path.append(f"{base_dir}/vits")
 base_dir = "/home/ubuntu/3d_temp"
