@@ -51,7 +51,7 @@ class FLAME(nn.Module):
 
     def __init__(self, config, optimize_basis=False):
         super(FLAME, self).__init__()
-        loguru.logger.info("[FLAME] creating the FLAME Decoder")
+        # loguru.logger.info("[FLAME] creating the FLAME Decoder")
         with open(config.flame_model_path, 'rb') as f:
             ss = pickle.load(f, encoding='latin1')
             flame_model = Struct(**ss)

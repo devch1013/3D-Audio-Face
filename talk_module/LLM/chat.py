@@ -16,7 +16,7 @@ class ChatGPTConversation:
     def __init__(self):
         llm = OpenAI(temperature=0)
         self.conversation = ConversationChain(
-            llm=llm, verbose=True, memory=ConversationBufferMemory()
+            llm=llm, verbose=False, memory=ConversationBufferMemory()
         )
         
     def __call__(self, prompt):

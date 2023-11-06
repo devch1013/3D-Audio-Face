@@ -13,16 +13,13 @@ class Image2Mesh:
         self.cfg = cfg
         self.args = args
         start_time = time.time()
-        print("Conver image to face meshes...")
-        print("Loading MICA...")
         self.mica, self.faces, self.app = MICA(cfg, args)
         self.lap_time_0 = time.time()
-        print(f"\033[1;3;31mLoading MICA Took... \n\t{self.lap_time_0 - start_time}s\033[0m")
         
-    def __call__(self):
+    def __call__(self, image_path):
         with torch.no_grad():
             logger.info(f'Processing has started...')
-            path = process_single(self.args, self.app, draw_bbox=False)
+            path = process_single(self.args, self.app, image_path, draw_bbox=False)
 
             name = Path(path).stem
             images, arcface = to_batch(path)
@@ -55,4 +52,4 @@ class Image2Mesh:
             # np.save(f'{dst}/kpt68', lmk.cpu().numpy() * 1000.0)           #####Landmark...
 
             lap_time_mica = time.time()
-            print(f"\033[1;3;31mRunning MICA Took... \n\t{lap_time_mica - self.lap_time_0}s\033[0m")
+            

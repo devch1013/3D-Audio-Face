@@ -16,11 +16,11 @@ import scipy.sparse as sp
 from scipy.sparse.linalg import spsolve
 import concurrent.futures
 from queue import Queue
-import copy
+from loguru import logger
+from tqdm import tqdm
 
 
 APP_ROOT = path.dirname( path.abspath( __file__ ) )
-base_dir = "/home/ubuntu/3d_temp"
 
 class MyMesh():
     
@@ -29,7 +29,7 @@ class MyMesh():
         
         
     def LoadMesh(self):
-        print("Loading ", self.filename)
+        # print("Loading ", self.filename)
         
         f = open(self.filename, 'r')
         
@@ -92,7 +92,7 @@ class MyMesh():
                 
                 idx_f+=1
                 
-        print(self.Faces)
+        # print(self.Faces)
 
         f.close()
 
@@ -230,7 +230,7 @@ class dtf():
 
         #compute Source triangle rotation
         start_time = time.time()
-        print("Compute Source rotation...")
+        # print("Compute Source rotation...")
 
         
         for i in range(0, len(self.SN_Faces)):
@@ -249,7 +249,7 @@ class dtf():
             SourceRotation[i] = np.dot(np.hstack([a.T, b.T, c.T]), Vinv) # S = np.dot(SE_Vtil, SN_Vinv)
 
         elapsed_time = time.time() - start_time
-        print("done {:.5f} sec)".format(elapsed_time))
+        # print("done {:.5f} sec)".format(elapsed_time))
         
         #Deformation Transfer term
         def MakeEd_ATc():
@@ -325,23 +325,23 @@ class dtf():
 
 
         start_time = time.time()
-        print("Make Ed...   ")
+        # print("Make Ed...   ")
         Ed_ATc = MakeEd_ATc()
         elapsed_time = time.time() - start_time
-        print("done {:.5f} sec".format(elapsed_time))
+        # print("done {:.5f} sec".format(elapsed_time))
 
         start_time = time.time()
-        print("Make El...   ")
+        # print("Make El...   ")
         (El_ATA, El_ATc) = MakeEl_ATA_ATc()
         elapsed_time = time.time() - start_time
-        print("done {:.5f} sec".format(elapsed_time))
+        # print("done {:.5f} sec".format(elapsed_time))
         start_time = time.time()
-        print("Make Econs...")
+        # print("Make Econs...")
         (Econs_ATA, Econs_ATc) = MakeEcons_ATA_ATc()
         elapsed_time = time.time() - start_time
-        print("done {:.5f} sec".format(elapsed_time))
+        # print("done {:.5f} sec".format(elapsed_time))
         start_time = time.time()
-        print("Solving Matrix system...")
+        # print("Solving Matrix system...")
         wd=1; wl=100; ws=10; wi=1; wcons=1000
         ATA_sum = wd*self.Ed_ATA + wl*El_ATA + ws*self.Es_ATA + wi*self.Ei_ATA + wcons*Econs_ATA
         ATc_sum = wd*Ed_ATc + wl*El_ATc + ws*self.Es_ATc + wi*self.Ei_ATc + wcons*Econs_ATc
@@ -349,11 +349,14 @@ class dtf():
         #ATc_sum = wd*Ed_ATc + 0.001*self.Ei_ATc
         x = spsolve(ATA_sum, ATc_sum)
         elapsed_time = time.time() - start_time
-        print("done {:.5f} sec".format(elapsed_time))
+        # print("done {:.5f} sec".format(elapsed_time))
         elapsed_time = time.time() - start_dtf
-        print("All calculation was finished  (Elapsed time: {:.5f})".format(elapsed_time))
+        # print("All calculation was finished  (Elapsed time: {:.5f})".format(elapsed_time))
+        # logger.info("All calculation was finished (Elapsed time: {:.5f})".format(elapsed_time))
 
         self.Vertices = x[0:len(self.AN_Vertices)*3].reshape(len(self.AN_Vertices), 3)
+        
+        return elapsed_time
 
 
 
@@ -366,8 +369,8 @@ class BMMng():
         self.Correspondences = []
         self.AVATAR_LANDMARKS = []
         self.AVATAR_BACKWARD_LANDMARKS = []
-        self.SOURCE_LANDMARKS = self.LoadLandmarks(f"{base_dir}/BlendShapeMaker/data/landmarks/SOURCE/faceXmodel_landmark.txt")
-        self.SOURCE_BACKWARD_LANDMARKS = self.LoadLandmarks(f"{base_dir}/BlendShapeMaker/data/landmarks/SOURCE/BACKWARD_LANDMARKS.txt")
+        self.SOURCE_LANDMARKS = self.LoadLandmarks("face_module/LDT/data/landmarks/SOURCE/faceXmodel_landmark.txt")
+        self.SOURCE_BACKWARD_LANDMARKS = self.LoadLandmarks("face_module/LDT/data/landmarks/SOURCE/BACKWARD_LANDMARKS.txt")
         self.config = self.LoadConfig("config.txt")
         self.BS_forPartsSize = []
         d = path.split(self.avatarpath) #split path in (head, tail) 
@@ -453,7 +456,7 @@ class BMMng():
         # print(currMesh.Faces)
         self.BlendShapes.append(currMesh)
 
-        for i in range(len(self.blend_name)):
+        for i in tqdm(range(len(self.blend_name))):
 
             try:
                 currMesh = MyMesh(self.path + self.blend_name[i].replace("Left","_L").replace("Right", "_R") + ".obj")
@@ -475,13 +478,13 @@ class BMMng():
 
     def LoadLandmarks(self, filepath):
         if path.exists(filepath):
-            print("Loading ", filepath)
+            # print("Loading ", filepath)
 
             with open(filepath, 'r') as f:
                 line = f.readline()
                 words = line.split()
                 landmarks = [int(i) for i in words]
-                print(landmarks)
+                # print(landmarks)
             return landmarks
         else:
             print("Landmark file does not exists: {}".format(filepath))
@@ -501,7 +504,7 @@ class BMMng():
     def SaveMesh(self, dest, filename, Vertices, Faces, Textures, TexName, Flags):
 
         ''' Write result 3D mesh into a .ply file'''
-        print("Saving ", filename)
+        # print("Saving ", filename)
 
         f = open(dest+filename, 'w')
 
@@ -617,7 +620,7 @@ class BMMng():
 
             return Visualize.AVATAR_LANDMARKS
         
-        filepath = f"{base_dir}/BlendShapeMaker/data/landmarks/landmarks_%s.txt" %(self.avatarname)
+        filepath = "face_module/LDT/data/landmarks/landmarks_%s.txt" %(self.avatarname)
         
         previous_landmarks = self.LoadLandmarks(filepath)
         
@@ -651,16 +654,15 @@ class BMMng():
 
 
         self.CaredVertices = np.full(len(self.Avatar[0].Vertices), True, dtype=bool)
-        self.SaveMesh(f"{base_dir}/BlendShapeMaker/Results/", "Rescaled.ply", self.Avatar[0].Vertices, self.Avatar[0].Faces, self.Avatar[0].Textures, self.Avatar[0].TexName, self.Avatar[0].Flags)
+        self.SaveMesh("face_module/LDT/Results/", "Rescaled.ply", self.Avatar[0].Vertices, self.Avatar[0].Faces, self.Avatar[0].Textures, self.Avatar[0].TexName, self.Avatar[0].Flags)
 
     def TriangleCorrespondence(self, level):
         AvatarFaces = self.Avatar[0].Faces
         AvatarVertices = self.Avatar[0].Vertices
         AvatarV4 = np.zeros((len(AvatarFaces), 3), dtype = np.float32)
         SourceFaces = self.BlendShapes[0].Faces
-        print(SourceFaces[:10])
         SourceVertices = self.BlendShapes[0].Vertices
-        print(f"source faces, source vertices: {len(SourceFaces)},{len(SourceVertices)}")
+        # print(f"source faces, source vertices: {len(SourceFaces)},{len(SourceVertices)}")
         SourceV4 = np.zeros((len(SourceFaces), 3), dtype = np.float32)
         unusedpoints = []
 
@@ -675,7 +677,8 @@ class BMMng():
 
         #find adjacent triangles
         start_time = time.time()
-        print("Finding adjacent triangles...")
+        # print("Finding adjacent triangles...")
+        # logger.info("Finding adjacent triangles...")
         Flist = AvatarFaces[:,[0, 2, 4]].tolist()
         for i in range(0, len(Flist)):
             set1 = set(Flist[i])
@@ -686,11 +689,13 @@ class BMMng():
                     self.Adjacent[j] += [i]
                 if(len(self.Adjacent[i])>=3): break
         
-        print("done {:.5f} sec".format(time.time() - start_time))
+        # print("done {:.5f} sec".format(time.time() - start_time))
+        # logger.info("done {:.5f} sec".format(time.time() - start_time))
 
         #find parts that contains facial landmarks
         start_time = time.time()
-        print("Finding parts that contains facial landmarks...")
+        # print("Finding parts that contains facial landmarks...")
+        # logger.info("Finding parts that contains facial landmarks...")
         self.CaredFaces = np.full(len(AvatarFaces), False, dtype=bool)
         self.CaredVertices = np.full(len(AvatarVertices), False, dtype=bool)
         StartFaces = []
@@ -722,11 +727,12 @@ class BMMng():
                 self.CaredVertices[AvatarFaces[i,2]] = True
                 self.CaredVertices[AvatarFaces[i,4]] = True
 
-        print("done {:.5f} sec".format(time.time() - start_time))
+        # logger.info("done {:.5f} sec".format(time.time() - start_time))
 
         #compute avatar v4 from v1,v2,v3
         start_time = time.time()
-        print("Computing V4 and Normals...")
+        # print("Computing V4 and Normals...")
+        # logger.info("Computing V4 and Normals...")
         for k in range(0, len(AvatarFaces)):
             cross = np.cross(AvatarVertices[AvatarFaces[k, 2],0:3] - AvatarVertices[AvatarFaces[k, 0],0:3], AvatarVertices[AvatarFaces[k, 4],0:3]-AvatarVertices[AvatarFaces[k, 0],0:3])
             AvatarV4[k] = AvatarVertices[AvatarFaces[k, 0],0:3] + cross / sqrt(LA.norm(cross))
@@ -754,17 +760,19 @@ class BMMng():
             # print("triangle normals",SourceTriangleNormals[:20])
             # print("triangle list",SourceTrianglesList[i])
             # ANCHOR SourceTriangle
-            print(SourceTrianglesList[i])
+            # print(SourceTrianglesList[i])
             SourceN = SourceTriangleNormals[SourceTrianglesList[i][0]]
             for j in range(1, len(SourceTrianglesList[i])):
                 SourceN = SourceN + SourceTriangleNormals[SourceTrianglesList[i][j]]
             SourceVertexNormals[i] = SourceN / LA.norm(SourceN)
 
-        print("done {:.5f} sec".format(time.time() - start_time))
+        # print("done {:.5f} sec".format(time.time() - start_time))
+        # logger.info("done {:.5f} sec".format(time.time() - start_time))
 
 
         start_time = time.time()
-        print("Computing V inverce...")
+        # print("Computing V inverce...")
+        # logger.info("Computing V inverce...")
         #compute avatar V inverse
         for i in range(0, len(AvatarFaces)):
             a = np.array([AvatarVertices[AvatarFaces[i,2],0:3] - AvatarVertices[AvatarFaces[i,0],0:3]])
@@ -773,7 +781,8 @@ class BMMng():
 
             Vinv[i] = np.linalg.solve(np.hstack([a.T, b.T, c.T]), np.identity(3))
 
-        print("done {:.5f} sec".format(time.time() - start_time))
+        # print("done {:.5f} sec".format(time.time() - start_time))
+        # logger.info("done {:.5f} sec".format(time.time() - start_time))
 
 
         #make large matrices and vectors
@@ -1061,14 +1070,14 @@ class BMMng():
         
 
         #Iterate optimization 4 times
-        print("Generating large matrices...")
+        # print("Generating large matrices...")
         start_time = time.time()
         (self.Es_ATA, self.Es_ATc) = MakeEs_ATA_ATc()
-        print("Es :", time.time() - start_time)
+        # print("Es :", time.time() - start_time)
 
         start_time = time.time()
         (self.Ei_ATA, self.Ei_ATc) = MakeEi_ATA_ATc()
-        print("Ei :", time.time() - start_time)
+        # print("Ei :", time.time() - start_time)
 
         '''
         #skip iteration and correspondence process when corr_(avatarname).txt exists
@@ -1085,7 +1094,7 @@ class BMMng():
 
         start_time = time.time()
         (Econs_ATA, Econs_ATc) = MakeEcons_ATA_ATc()
-        print("Econs :",time.time() - start_time)
+        # print("Econs :",time.time() - start_time)
 
 
         #1st
@@ -1095,16 +1104,16 @@ class BMMng():
         start_time = time.time()
         FirstIteration = spsolve(A_sum, c_sum)
         elapsed_time = time.time() - start_time
-        print("First iteration was finished  (%f sec)" % (elapsed_time))
+        logger.info("First iteration was finished  (%f sec)" % (elapsed_time))
         self.Result_iteration[0] = FirstIteration[0:len(AvatarVertices)*3].reshape(len(AvatarVertices), 3)
-        self.SaveMesh(f"{base_dir}/BlendShapeMaker/Results/", "iteration_1.ply", self.Result_iteration[0], self.Avatar[0].Faces, self.Avatar[0].Textures, self.Avatar[0].TexName, self.Avatar[0].Flags)
+        self.SaveMesh("face_module/LDT/Results/", "iteration_1.ply", self.Result_iteration[0], self.Avatar[0].Faces, self.Avatar[0].Textures, self.Avatar[0].TexName, self.Avatar[0].Flags)
 
         #2nd
-        print("Computing closest valid points...")
+        # print("Computing closest valid points...")
         start_time = time.time()
         (Ec_ATA, Ec_ATc) = ClosestValidPoint(FirstIteration[0:len(AvatarVertices)*3], 100)
         elapsed_time = time.time() - start_time
-        print("done {:.5f} sec".format(elapsed_time))
+        # print("done {:.5f} sec".format(elapsed_time))
 
         ws = 1; wi = 0.001; wc = 0.1; wcons = 1
         A_sum = ws*self.Es_ATA + wi*self.Ei_ATA + wc*Ec_ATA + Econs_ATA
@@ -1112,16 +1121,16 @@ class BMMng():
         start_time = time.time()
         SecondIteration = spsolve(A_sum, c_sum)
         elapsed_time = time.time() - start_time
-        print("Second iteration was finished (%f sec)" % (elapsed_time))
+        logger.info("Second iteration was finished (%f sec)" % (elapsed_time))
         self.Result_iteration[1] = SecondIteration[0:len(AvatarVertices)*3].reshape(len(AvatarVertices), 3)
-        self.SaveMesh(f"{base_dir}/BlendShapeMaker/Results/", "iteration_2.ply", self.Result_iteration[1], self.Avatar[0].Faces, self.Avatar[0].Textures, self.Avatar[0].TexName, self.Avatar[0].Flags)
+        self.SaveMesh("face_module/LDT/Results/", "iteration_2.ply", self.Result_iteration[1], self.Avatar[0].Faces, self.Avatar[0].Textures, self.Avatar[0].TexName, self.Avatar[0].Flags)
 
         #3rd
-        print("Computing closest valid points...")
+        # print("Computing closest valid points...")
         start_time = time.time()
         (Ec_ATA, Ec_ATc) = ClosestValidPoint(SecondIteration[0:len(AvatarVertices)*3], 10)
         elapsed_time = time.time() - start_time
-        print("done {:.5f} sec".format(elapsed_time))
+        # print("done {:.5f} sec".format(elapsed_time))
 
         ws = 1; wi = 0.001; wc = 1; wcons = 1
         A_sum = ws*self.Es_ATA + wi*self.Ei_ATA + wc*Ec_ATA + Econs_ATA
@@ -1129,16 +1138,16 @@ class BMMng():
         start_time = time.time()
         ThirdIteration = spsolve(A_sum, c_sum)
         elapsed_time = time.time() - start_time
-        print("Third iteration was finished  (%f sec)".format(elapsed_time))
+        logger.info("Third iteration was finished  (%f sec)"%(elapsed_time))
         self.Result_iteration[2] = ThirdIteration[0:len(AvatarVertices)*3].reshape(len(AvatarVertices), 3)
-        self.SaveMesh(f"{base_dir}/BlendShapeMaker/Results/", "iteration_3.ply", self.Result_iteration[2], self.Avatar[0].Faces, self.Avatar[0].Textures, self.Avatar[0].TexName, self.Avatar[0].Flags)
+        self.SaveMesh("face_module/LDT/Results/", "iteration_3.ply", self.Result_iteration[2], self.Avatar[0].Faces, self.Avatar[0].Textures, self.Avatar[0].TexName, self.Avatar[0].Flags)
 
         #4th
-        print("Computing closest valid points...")
+        # print("Computing closest valid points...")
         start_time = time.time()
         (Ec_ATA, Ec_ATc) = ClosestValidPoint(ThirdIteration[0:len(AvatarVertices)*3], 5)
         elapsed_time = time.time() - start_time
-        print("done {:.5f} sec".format(elapsed_time))
+        # print("done {:.5f} sec".format(elapsed_time))
         
         ws = 1; wi = 0.001; wc = 1; wcons = 1
         A_sum = ws*self.Es_ATA + wi*self.Ei_ATA + wc*Ec_ATA + Econs_ATA
@@ -1146,9 +1155,9 @@ class BMMng():
         start_time = time.time()
         FourthIteration = spsolve(A_sum, c_sum)
         elapsed_time = time.time() - start_time
-        print("Fourth iteration was finished (%f sec)".format(elapsed_time))
+        logger.info("Fourth iteration was finished (%f sec)"%(elapsed_time))
         self.Result_iteration[3] = FourthIteration[0:len(AvatarVertices)*3].reshape(len(AvatarVertices), 3)
-        self.SaveMesh(f"{base_dir}/BlendShapeMaker/Results/", "iteration_4.ply", self.Result_iteration[3], self.Avatar[0].Faces, self.Avatar[0].Textures, self.Avatar[0].TexName, self.Avatar[0].Flags)
+        self.SaveMesh("face_module/LDT/Results/", "iteration_4.ply", self.Result_iteration[3], self.Avatar[0].Faces, self.Avatar[0].Textures, self.Avatar[0].TexName, self.Avatar[0].Flags)
 
         ResultVertices = FourthIteration[0:len(AvatarVertices)*3].reshape(len(AvatarVertices), 3)
 
@@ -1159,7 +1168,7 @@ class BMMng():
 
         start_time = time.time()
 
-        print("Computing triangle correspondences...")
+        # print("Computing triangle correspondences...")
         ##compute centroid
         ResultTriangleCentroid = np.zeros((len(AvatarFaces), 3), dtype=np.float32)
         SourceTriangleCentroid = np.zeros((len(SourceFaces), 3), dtype=np.float32)
@@ -1220,7 +1229,7 @@ class BMMng():
                 norm = LA.norm(SourceVertices[i,0:3] - AvatarVertices[:,0:3], axis=1)
                 self.backlandmark_list += [[i, np.argmin(norm)]]
 
-        print("done {:.5f} sec".format(time.time() - start_time))
+        # print("done {:.5f} sec".format(time.time() - start_time))
 
 
 
@@ -1362,17 +1371,17 @@ class BMMng():
 
             return (Vertices, Faces, Textures)
 
-        print("Max number of correspondences per triangle :", max(num_corrS_triangles))
+        # print("Max number of correspondences per triangle :", max(num_corrS_triangles))
         if(max(num_corrS_triangles)>=10 and level<0 and len(SourceFaces)/2>len(self.Avatar[0].Faces)):
             start_time = time.time()
             
-            print("Splitting some triangles...")
+            # print("Splitting some triangles...")
             (self.Avatar[0].Vertices, self.Avatar[0].Faces, self.Avatar[0].Textures) = SplitTriangles_2(self.Avatar[0].Vertices, self.Avatar[0].Faces, self.Avatar[0].Textures, num_corrS_triangles)
-            print("done {:.5f} sec".format(time.time() - start_time))
-            print("Vertices", len(self.Avatar[0].Vertices))
-            print("Faces", len(self.Avatar[0].Faces))
+            # print("done {:.5f} sec".format(time.time() - start_time))
+            # print("Vertices", len(self.Avatar[0].Vertices))
+            # print("Faces", len(self.Avatar[0].Faces))
 
-            print("Recompute Correspondences (%d time(s))" %(level + 1))
+            # print("Recompute Correspondences (%d time(s))" %(level + 1))
 
             corr = self.TriangleCorrespondence(level + 1)
 
@@ -1382,7 +1391,7 @@ class BMMng():
         
   
         elapsed_time = time.time() - start_time
-        print("%d correspondences were found (%f sec)".format(len(corr), elapsed_time))
+        # print("%d correspondences were found (%f sec)".format(len(corr), elapsed_time))
 
         '''
         #find no-corresopndence triangles
@@ -1420,7 +1429,7 @@ class BMMng():
             for c in self.Correspondences:
                 f.write("%d %d\n" %(c[0], c[1]))
 
-        self.SaveMesh(f"{base_dir}/BlendShapeMaker/Results/", "Splitted.ply", self.Avatar[0].Vertices, self.Avatar[0].Faces, self.Avatar[0].Textures, self.Avatar[0].TexName, self.Avatar[0].Flags)
+        self.SaveMesh("face_module/LDT/Results/", "Splitted.ply", self.Avatar[0].Vertices, self.Avatar[0].Faces, self.Avatar[0].Textures, self.Avatar[0].TexName, self.Avatar[0].Flags)
 
 
         
@@ -1557,8 +1566,8 @@ class BMMng():
             angles = AN_partsnormals()
             PartsAngles_A = np.vstack((PartsAngles_A, [[angles[0], angles[1]]]))
         '''
-        print("Angles x, y")
-        print(PartsAngles_A*180/np.pi)
+        # print("Angles x, y")
+        # print(PartsAngles_A*180/np.pi)
         
 
         for i in range(6):
@@ -1599,22 +1608,22 @@ class BMMng():
             return (size_x, size_y, size_z)
 
         (x, y, z) = Measure_Source_Parts_Size(0, 4, 0)
-        S_PartsSize = np.array([[x, y, z]]) ;print("Right eyebrow: x: %f, y: %f, z: %f" %(x, y, z))
+        S_PartsSize = np.array([[x, y, z]])# ;print("Right eyebrow: x: %f, y: %f, z: %f" %(x, y, z))
         (x, y, z) = Measure_Source_Parts_Size(5, 9, 1)
-        S_PartsSize = np.vstack((S_PartsSize, [[x, y, z]])) ;print("Left eyebrow: x: %f, y: %f, z: %f" %(x, y, z))
+        S_PartsSize = np.vstack((S_PartsSize, [[x, y, z]]))# ;print("Left eyebrow: x: %f, y: %f, z: %f" %(x, y, z))
         (x, y, z) = Measure_Source_Parts_Size(10, 18, 2)
-        S_PartsSize = np.vstack((S_PartsSize, [[x, y, z]])) ;print("Nose: x: %f, y: %f, z: %f" %(x, y, z))
+        S_PartsSize = np.vstack((S_PartsSize, [[x, y, z]]))# ;print("Nose: x: %f, y: %f, z: %f" %(x, y, z))
         (x, y, z) = Measure_Source_Parts_Size(19, 24, 3)
-        S_PartsSize = np.vstack((S_PartsSize, [[x, y, z]])) ;print("Right eye: x: %f, y: %f, z: %f" %(x, y, z))
+        S_PartsSize = np.vstack((S_PartsSize, [[x, y, z]]))# ;print("Right eye: x: %f, y: %f, z: %f" %(x, y, z))
         (x, y, z) = Measure_Source_Parts_Size(25, 30, 4)
-        S_PartsSize = np.vstack((S_PartsSize, [[x, y, z]])) ;print("Left eye: x: %f, y: %f, z: %f" %(x, y, z))
+        S_PartsSize = np.vstack((S_PartsSize, [[x, y, z]]))# ;print("Left eye: x: %f, y: %f, z: %f" %(x, y, z))
         (x, y, z) = Measure_Source_Parts_Size(31, 50, 5)
         y1 = LA.norm(SN_Vertices[self.SOURCE_LANDMARKS[15],0:3]-SN_Vertices[self.SOURCE_LANDMARKS[44],0:3])
         y2 = LA.norm(SN_Vertices[self.SOURCE_LANDMARKS[16],0:3]-SN_Vertices[self.SOURCE_LANDMARKS[45],0:3])
         y3 = LA.norm(SN_Vertices[self.SOURCE_LANDMARKS[17],0:3]-SN_Vertices[self.SOURCE_LANDMARKS[46],0:3])
         y = (y1+y2+y3)/3 
         S_PartsSize = np.vstack((S_PartsSize, [[x, y, z]]))
-        print("Mouth: x: %f, y: %f, z: %f" %(x, y, z))
+        # print("Mouth: x: %f, y: %f, z: %f" %(x, y, z))
 
 
 
@@ -1643,22 +1652,22 @@ class BMMng():
 
 
         (x, y, z) = Measure_Avatar_Parts_Size(0, 4, 0)
-        A_PartsSize = np.array([[x, y, z]]) ;print("Right eyebrow: x: %f, y: %f, z: %f" %(x, y, z))
+        A_PartsSize = np.array([[x, y, z]])# ;print("Right eyebrow: x: %f, y: %f, z: %f" %(x, y, z))
         (x, y, z) = Measure_Avatar_Parts_Size(5, 9, 1)
-        A_PartsSize = np.vstack((A_PartsSize, [[x, y, z]])) ;print("Left eyebrow: x: %f, y: %f, z: %f" %(x, y, z))
+        A_PartsSize = np.vstack((A_PartsSize, [[x, y, z]]))# ;print("Left eyebrow: x: %f, y: %f, z: %f" %(x, y, z))
         (x, y, z) = Measure_Avatar_Parts_Size(10, 18, 2)
-        A_PartsSize = np.vstack((A_PartsSize, [[x, y, z]])) ;print("Nose: x: %f, y: %f, z: %f" %(x, y, z))
+        A_PartsSize = np.vstack((A_PartsSize, [[x, y, z]]))# ;print("Nose: x: %f, y: %f, z: %f" %(x, y, z))
         (x, y, z) = Measure_Avatar_Parts_Size(19, 24, 3)
-        A_PartsSize = np.vstack((A_PartsSize, [[x, y, z]])) ;print("Right eye: x: %f, y: %f, z: %f" %(x, y, z))
+        A_PartsSize = np.vstack((A_PartsSize, [[x, y, z]]))# ;print("Right eye: x: %f, y: %f, z: %f" %(x, y, z))
         (x, y, z) = Measure_Avatar_Parts_Size(25, 30, 4)
-        A_PartsSize = np.vstack((A_PartsSize, [[x, y, z]])) ;print("Left eye: x: %f, y: %f, z: %f" %(x, y, z))
+        A_PartsSize = np.vstack((A_PartsSize, [[x, y, z]]))# ;print("Left eye: x: %f, y: %f, z: %f" %(x, y, z))
         (x, y, z) = Measure_Avatar_Parts_Size(31, 50, 5)
         y1 = LA.norm(AN_Vertices[self.AVATAR_LANDMARKS[15],0:3]-AN_Vertices[self.AVATAR_LANDMARKS[44],0:3])
         y2 = LA.norm(AN_Vertices[self.AVATAR_LANDMARKS[16],0:3]-AN_Vertices[self.AVATAR_LANDMARKS[45],0:3])
         y3 = LA.norm(AN_Vertices[self.AVATAR_LANDMARKS[17],0:3]-AN_Vertices[self.AVATAR_LANDMARKS[46],0:3])
         y = (y1+y2+y3)/3
         z = S_PartsSize[5][2]
-        A_PartsSize = np.vstack((A_PartsSize, [[x, y, z]])) ;print("Mouth: x: %f, y: %f, z: %f" %(x, y, z))
+        A_PartsSize = np.vstack((A_PartsSize, [[x, y, z]]))# ;print("Mouth: x: %f, y: %f, z: %f" %(x, y, z))
 
 
         for i in range(len(A_PartsSize)):
@@ -1666,7 +1675,7 @@ class BMMng():
             PartsSize = np.vstack((PartsSize, size))
        
 
-        print(PartsSize)
+        # print(PartsSize)
 
         #compute Avatar Neutral Vinv
         for i in range(len(AN_Faces)):
@@ -1785,11 +1794,11 @@ class BMMng():
 
             return (np.dot(Ei_A.T, Ei_A), np.dot(Ei_A.T, Ei_cVector))
 
-        print("Generating deformation transfer matrices...")
+        # print("Generating deformation transfer matrices...")
         start_time = time.time()
         Ed_A = MakeEd_A()
         Ed_ATA = np.dot(Ed_A.T, Ed_A)
-        elapsed_time = time.time() - start_time; print("Ed_A, Ed_ATA :", elapsed_time)
+        elapsed_time = time.time() - start_time#; print("Ed_A, Ed_ATA :", elapsed_time)
 
 
         #find unused points
@@ -1802,25 +1811,30 @@ class BMMng():
         for i in range(len(AN_Vertices)):
             if(Used[i] ==False):
                 unusedpoints += [i]
-        print("Unused points :", unusedpoints)
+        #print("Unused points :", unusedpoints)
 
         i = 0
         currMesh = dtf(self.Correspondences, self.SOURCE_LANDMARKS, self.AVATAR_LANDMARKS, self.BlendShapes[0], self.BlendShapes[0], self.Avatar[0], PartsSize, PartsRot, Ed_A, Ed_ATA, self.Es_ATA, self.Es_ATc, self.Ei_ATA, self.Ei_ATc, self.backlandmark_list)
-        print("\n\nGenerating Neutral AvatarMesh")
+        # print("\n\nGenerating Neutral AvatarMesh")
         currMesh.deformation_transfer()
-        self.SaveMesh(f"{base_dir}/BlendShapeMaker/Results/", "AvatarMesh_Neutral.ply", currMesh.Vertices, self.Avatar[0].Faces, self.Avatar[0].Textures, self.Avatar[0].TexName, self.Avatar[0].Flags)
+        self.SaveMesh("face_module/LDT/Results/", "AvatarMesh_Neutral.ply", currMesh.Vertices, self.Avatar[0].Faces, self.Avatar[0].Textures, self.Avatar[0].TexName, self.Avatar[0].Flags)
 
-        for meshnum in range(len(self.blend_name)):
+        logger.info(f"Make Blendshapes")
+        start = time.time()
+        for meshnum in tqdm(range(len(self.blend_name))):
             # if ((meshnum > 1 and meshnum < 14) or meshnum == 17 or meshnum == 18 or meshnum == 19 or meshnum == 22 or meshnum == 26 
             # or meshnum == 27 or meshnum == 34 or meshnum == 35 or meshnum == 42):
             #     continue
             # else:
             currMesh = dtf(self.Correspondences, self.SOURCE_LANDMARKS, self.AVATAR_LANDMARKS, self.BlendShapes[i+1], self.BlendShapes[0], self.Avatar[0], PartsSize, PartsRot, Ed_A, Ed_ATA, self.Es_ATA, self.Es_ATc, self.Ei_ATA, self.Ei_ATc, self.backlandmark_list)
-            print("Generating Avatar blendshape ", meshnum)
-            currMesh.deformation_transfer()
+            # print("Generating Avatar blendshape ", meshnum)
+            elapsed_time = currMesh.deformation_transfer()
             self.Avatar.append(currMesh)
             name = f"{self.blend_name[meshnum]}.ply"
-            self.SaveMesh(f"{base_dir}/BlendShapeMaker/Results/", name, self.Avatar[i+1].Vertices, self.Avatar[0].Faces, self.Avatar[0].Textures, self.Avatar[0].TexName, self.Avatar[0].Flags)
+            self.SaveMesh("face_module/LDT/Results/", name, self.Avatar[i+1].Vertices, self.Avatar[0].Faces, self.Avatar[0].Textures, self.Avatar[0].TexName, self.Avatar[0].Flags)
+            # logger.info(f"Saving {name} (Elapsed time: {elapsed_time:.5f})")
             i += 1
+        logger.info(f"Make Blendshapes")
 
-        print("%d blendshapes are generated\n" %(len(self.Avatar)))
+        elapsed_time = time.time()-start
+        logger.info(f"{len(self.Avatar)} blendshapes are generated (elapsed time: {elapsed_time})")

@@ -12,7 +12,7 @@ from face_module.LDT.lib import BMManager
 
 def Mesh2Blendshape(path):
     print("******Load given Blendshape meshes******")
-    BM = BMManager.BMMng('LDT/data/faceXmodel_head_tri/', path)
+    BM = BMManager.BMMng('face_module/LDT/data/faceXmodel_head_tri/', path)
     BM.LoadBS()
     print(len(BM.BlendShapes), "Base blendshapes are loaded")
 

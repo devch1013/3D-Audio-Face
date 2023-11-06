@@ -78,12 +78,11 @@ def process(args, app, image_size=224, draw_bbox=False):
 
     return processes
 
-def process_single(args, app, image_size=224, draw_bbox=False):
+def process_single(args, app, image_path,image_size=224, draw_bbox=False):
     dst = Path(args.a)
     dst.mkdir(parents=True, exist_ok=True)
     # processes = []
     # image_paths = sorted(glob(args.i + '/*.*'))
-    image_path = args.path
     # for image_path in tqdm(image_paths):
     name = Path(image_path).stem
     img = cv2.imread(image_path)
