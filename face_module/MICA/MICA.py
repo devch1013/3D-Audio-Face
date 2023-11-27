@@ -49,16 +49,16 @@ def deterministic(rank):
 
 
 def process(args, app, image_size=224, draw_bbox=False):
-    dst = Path(args.a)
+    dst = Path(args["mica_param"]["arcface"])
     dst.mkdir(parents=True, exist_ok=True)
     processes = []
-    image_paths = sorted(glob(args.i + '/*.*'))
+    image_paths = sorted(glob(args["mica_param"]["input"] + "/*.*"))
     for image_path in tqdm(image_paths):
         name = Path(image_path).stem
         img = cv2.imread(image_path)
         bboxes, kpss = app.detect(img)
         if bboxes.shape[0] == 0:
-            logger.error(f'[ERROR] Face not detected for {image_path}')
+            logger.error(f"[ERROR] Face not detected for {image_path}")
             continue
         i = get_center(bboxes, img)
         bbox = bboxes[i, 0:4]
@@ -70,16 +70,19 @@ def process(args, app, image_size=224, draw_bbox=False):
         blob, aimg = get_arcface_input(face, img)
         file = str(Path(dst, name))
         np.save(file, blob)
-        processes.append(file + '.npy')
-        cv2.imwrite(file + '.jpg', face_align.norm_crop(img, landmark=face.kps, image_size=image_size))
+        processes.append(file + ".npy")
+        cv2.imwrite(
+            file + ".jpg", face_align.norm_crop(img, landmark=face.kps, image_size=image_size)
+        )
         if draw_bbox:
             dimg = draw_on(img, [face])
-            cv2.imwrite(file + '_bbox.jpg', dimg)
+            cv2.imwrite(file + "_bbox.jpg", dimg)
 
     return processes
 
-def process_single(args, app, image_path,image_size=224, draw_bbox=False):
-    dst = Path(args.a)
+
+def process_single(args, app, image_path, image_size=224, draw_bbox=False):
+    dst = Path(args["mica_param"]["arcface"])
     dst.mkdir(parents=True, exist_ok=True)
     # processes = []
     # image_paths = sorted(glob(args.i + '/*.*'))
@@ -88,7 +91,7 @@ def process_single(args, app, image_path,image_size=224, draw_bbox=False):
     img = cv2.imread(image_path)
     bboxes, kpss = app.detect(img)
     if bboxes.shape[0] == 0:
-        logger.error(f'[ERROR] Face not detected for {image_path}')
+        logger.error(f"[ERROR] Face not detected for {image_path}")
     i = get_center(bboxes, img)
     bbox = bboxes[i, 0:4]
     det_score = bboxes[i, 4]
@@ -100,23 +103,23 @@ def process_single(args, app, image_path,image_size=224, draw_bbox=False):
     file = str(Path(dst, name))
     np.save(file, blob)
 
-    process = file + '.npy'
+    process = file + ".npy"
     # processes.append(file + '.npy')
-    cv2.imwrite(file + '.jpg', face_align.norm_crop(img, landmark=face.kps, image_size=image_size))
+    cv2.imwrite(file + ".jpg", face_align.norm_crop(img, landmark=face.kps, image_size=image_size))
     if draw_bbox:
         dimg = draw_on(img, [face])
-        cv2.imwrite(file + '_bbox.jpg', dimg)
+        cv2.imwrite(file + "_bbox.jpg", dimg)
 
     return process
 
 
 def to_batch(path):
-    src = path.replace('npy', 'jpg')
+    src = path.replace("npy", "jpg")
     if not os.path.exists(src):
-        src = path.replace('npy', 'png')
+        src = path.replace("npy", "png")
 
     image = imread(src)[:, :, :3]
-    image = image / 255.
+    image = image / 255.0
     image = cv2.resize(image, (224, 224)).transpose(2, 0, 1)
     image = torch.tensor(image).cuda()[None]
 
@@ -127,17 +130,19 @@ def to_batch(path):
 
 
 def load_checkpoint(args, mica):
-    checkpoint = torch.load(args.m)
-    if 'arcface' in checkpoint:
-        mica.arcface.load_state_dict(checkpoint['arcface'])
-    if 'flameModel' in checkpoint:
-        mica.flameModel.load_state_dict(checkpoint['flameModel'])
+    checkpoint = torch.load(args["mica_param"]["model"])
+    if "arcface" in checkpoint:
+        mica.arcface.load_state_dict(checkpoint["arcface"])
+    if "flameModel" in checkpoint:
+        mica.flameModel.load_state_dict(checkpoint["flameModel"])
 
 
 def MICA(cfg, args):
-    device = args.device
+    device = args["general"]["device"]
     cfg.model.testing = True
-    mica = util.find_model_using_name(model_dir='face_module.MICA.micalib.models', model_name=cfg.model.name)(cfg, device)
+    mica = util.find_model_using_name(
+        model_dir="face_module.MICA.micalib.models", model_name=cfg.model.name
+    )(cfg, device)
     load_checkpoint(args, mica)
     mica.eval()
 
@@ -175,12 +180,18 @@ def MICA(cfg, args):
     #     logger.info(f'Processing finished. Results has been saved in {args.o}')
 
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='MICA - Towards Metrical Reconstruction of Human Faces')
-    parser.add_argument('-i', default='demo/input', type=str, help='Input folder with images')
-    parser.add_argument('-o', default='demo/output', type=str, help='Output folder')
-    parser.add_argument('-a', default='demo/arcface', type=str, help='Processed images for MICA input')
-    parser.add_argument('-m', default='data/pretrained/mica.tar', type=str, help='Pretrained model path')
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="MICA - Towards Metrical Reconstruction of Human Faces"
+    )
+    parser.add_argument("-i", default="demo/input", type=str, help="Input folder with images")
+    parser.add_argument("-o", default="demo/output", type=str, help="Output folder")
+    parser.add_argument(
+        "-a", default="demo/arcface", type=str, help="Processed images for MICA input"
+    )
+    parser.add_argument(
+        "-m", default="data/pretrained/mica.tar", type=str, help="Pretrained model path"
+    )
 
     args = parser.parse_args()
     cfg = get_cfg_defaults()

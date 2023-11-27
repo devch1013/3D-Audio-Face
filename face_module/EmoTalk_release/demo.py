@@ -12,8 +12,8 @@ import shlex
 
 def load_STF(args):
     model = EmoTalk(args)
-    model.load_state_dict(torch.load(args.model_path, map_location=torch.device(args.device)), strict=False)
-    model = model.to(args.device)
+    model.load_state_dict(torch.load(args["ttf_param"]["model_path"], map_location=torch.device(args["general"]["device"])), strict=False)
+    model = model.to(args["general"]["device"])
     model.eval()
 
     return model
@@ -22,19 +22,20 @@ def load_STF(args):
 @torch.no_grad()
 def test(args, model, speech_array, file_name):
 
-    result_path = args.result_path
+    result_path = args["ttf_param"]["result_path"]
+    device = args["general"]["device"]
     os.makedirs(result_path, exist_ok=True)
     eye1 = np.array([0.36537236, 0.950235724, 0.95593375, 0.916715622, 0.367256105, 0.119113259, 0.025357503])
     eye2 = np.array([0.234776169, 0.909951985, 0.944758058, 0.777862132, 0.191071674, 0.235437036, 0.089163929])
     eye3 = np.array([0.870040774, 0.949833691, 0.949418545, 0.695911646, 0.191071674, 0.072576277, 0.007108896])
     eye4 = np.array([0.000307991, 0.556701422, 0.952656746, 0.942345619, 0.425857186, 0.148335218, 0.017659493])
 
-    audio = torch.FloatTensor(speech_array).unsqueeze(0).to(args.device)
-    level = torch.tensor([1]).to(args.device)
-    person = torch.tensor([0]).to(args.device)
+    audio = torch.FloatTensor(speech_array).unsqueeze(0).to(device)
+    level = torch.tensor([1]).to(device)
+    person = torch.tensor([0]).to(device)
     prediction = model.predict(audio, level, person)
     prediction = prediction.squeeze().detach().cpu().numpy()
-    if args.post_processing:
+    if args["ttf_param"]["post_processing"]:
         output = np.zeros((prediction.shape[0], prediction.shape[1]))
         for i in range(prediction.shape[1]):
             output[:, i] = savgol_filter(prediction[:, i], 5, 2)
@@ -70,14 +71,14 @@ def test(args, model, speech_array, file_name):
 def render_video(args):
     # wav_name = "args.wav_path.split('/')[-1].split('.')[0]"
     wav_name = "input"
-    image_path = os.path.join(args.result_path, wav_name)
+    image_path = os.path.join(args["ttf_param"]["result_path"], wav_name)
     os.makedirs(image_path, exist_ok=True)
     image_temp = image_path + "/%d.png"
-    output_path = os.path.join(args.result_path, wav_name + ".mp4")
-    blender_path = args.blender_path
+    output_path = os.path.join(args["ttf_param"]["result_path"], wav_name + ".mp4")
+    blender_path = args["ttf_param"]["blender_path"]
     python_path = "./render.py"
     blend_path = "./render.blend"
-    cmd = '{} -t 64 -b {} -P {} -- "{}" "{}" '.format(blender_path, blend_path, python_path, args.result_path, wav_name)
+    cmd = '{} -t 64 -b {} -P {} -- "{}" "{}" '.format(blender_path, blend_path, python_path, args["ttf_param"]["result_path"], wav_name)
     cmd = shlex.split(cmd)
     p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     while p.poll() is None:
@@ -90,7 +91,7 @@ def render_video(args):
     else:
         print('Subprogram failed')
 
-    cmd = 'ffmpeg -r 30 -i "{}" -i "{}" -pix_fmt yuv420p -s 512x768 "{}" -y'.format(image_temp, args.input_audio_path, output_path)
+    cmd = 'ffmpeg -r 30 -i "{}" -i "{}" -pix_fmt yuv420p -s 512x768 "{}" -y'.format(image_temp, args["ttf_param"]["input_audio_path"], output_path)
     subprocess.call(cmd, shell=True)
 
     cmd = 'rm -rf "{}"'.format(image_path)

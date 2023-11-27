@@ -11,6 +11,11 @@ __pycache__/
 *.wav
 **/blender
 **.ini
+**.jpg
+**.m4a
+**.txt
+**.png
+**.gif
 slurm-*
 
 *.ipynb

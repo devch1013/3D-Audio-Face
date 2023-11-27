@@ -1,0 +1,30 @@
+general:
+  device: cuda
+  num_workers: 0
+  batch_size: 1
+
+stt_param:
+  input_audio_path: data/audio_input/myquestion2.m4a
+
+tts_param:
+  output_path: data/results
+  config_dir: talk_module/vits/configs/ljs_base.json
+  tts_ckpt: talk_module/vits/pretrained_ljs.pth
+
+ttf_param:
+  model_path: face_module/EmoTalk_release/pretrain_model/EmoTalk.pth
+  result_path: data/result_emotalk
+  max_seq_len: 5000
+  post_processing: true
+  blender_path: Emotalk_release/blender
+  bs_dim: 52
+  feature_dim: 832
+  period: 30
+
+mica_param:
+  path: data/input_images/venedict.jpg
+  input: input
+  output: output_MICA
+  output_path: face_module/LDT/Inputs
+  arcface: face_module/MICA/demo/arcface
+  model: face_module/MICA/data/pretrained/mica.tar

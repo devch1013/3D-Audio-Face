@@ -12,7 +12,8 @@ class Mesh2Talk:
     def __init__(self, args):
         self.args = args
         self.stf_model = load_STF(args)
-        self.result_path = args.result_path
+        self.result_path = args["ttf_param"]["result_path"]
+        self.device = args["general"]["device"]
         
         self.eye1 = np.array(
             [
@@ -61,12 +62,12 @@ class Mesh2Talk:
 
     def __call__(self,speech_array, file_name, result_path):
         os.makedirs(result_path, exist_ok=True)
-        audio = torch.FloatTensor(speech_array).unsqueeze(0).to(self.args.device)
-        level = torch.tensor([1]).to(self.args.device)
-        person = torch.tensor([0]).to(self.args.device)
+        audio = torch.FloatTensor(speech_array).unsqueeze(0).to(self.device)
+        level = torch.tensor([1]).to(self.device)
+        person = torch.tensor([0]).to(self.device)
         prediction = self.stf_model.predict(audio, level, person)
         prediction = prediction.squeeze().detach().cpu().numpy()
-        if self.args.post_processing:
+        if self.args["ttf_param"]["post_processing"]:
             output = np.zeros((prediction.shape[0], prediction.shape[1]))
             for i in range(prediction.shape[1]):
                 output[:, i] = savgol_filter(prediction[:, i], 5, 2)

@@ -1834,7 +1834,7 @@ class BMMng():
             self.SaveMesh("face_module/LDT/Results/", name, self.Avatar[i+1].Vertices, self.Avatar[0].Faces, self.Avatar[0].Textures, self.Avatar[0].TexName, self.Avatar[0].Flags)
             # logger.info(f"Saving {name} (Elapsed time: {elapsed_time:.5f})")
             i += 1
-        logger.info(f"Make Blendshapes")
+        # logger.info(f"Make Blendshapes")
 
         elapsed_time = time.time()-start
         logger.info(f"{len(self.Avatar)} blendshapes are generated (elapsed time: {elapsed_time})")
