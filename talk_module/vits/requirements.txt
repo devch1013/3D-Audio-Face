@@ -1,10 +1,24 @@
-Cython==0.29.21
-librosa==0.8.0
-matplotlib==3.3.1
-# numpy==1.18.5
-phonemizer==2.2.1
-scipy==1.5.2
-# tensorboard==2.3.0
-# torch==1.6.0
-# torchvision==0.7.0
-Unidecode==1.1.1
+torch
+torchvision
+torchaudio
+tensorflow
+"modelscope[cv]" -f https://modelscope.oss-cn-beijing.aliyuncs.com/releases/repo.html
+git+https://github.com/NVlabs/nvdiffrast.git
+git+https://github.com/facebookresearch/pytorch3d.git
+pymeshlab
+gdown
+openai
+openai-whisper
+langchain
+Cython
+librosa
+matplotlib
+phonemizer
+scipy
+tensorboard
+Unidecode
+transformers
+tqdm
+loguru
+insightface
+numpy==1.23.4
