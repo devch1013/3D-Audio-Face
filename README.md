@@ -14,4 +14,4 @@ Codes for audio driven 3D face generation
 
     since texturemap in pymeshlab only supports png files
 
-4. 
+TODO : 236, 1824번째줄 어떻게 좀 수정하면 빨라질거같은데 둘다 병렬연산될거같아서

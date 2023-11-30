@@ -94,7 +94,7 @@ class TalkWithMe:
         
 if __name__ == "__main__":
     main_model = TalkWithMe()
-    image_path = "data/input_images/venedict.jpg"
+    image_path = "data/input_images/murphy.png"
     input_audio_path = "data/audio_input/myquestion2.m4a"
-    face_name = "venedict"
+    face_name = "woosung"
     main_model(image_path, input_audio_path, face_name)

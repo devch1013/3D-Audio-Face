@@ -30,6 +30,8 @@ class HRN():
         ] 
         self.output_dir = output_dir
         self.downsampled_dir = os.path.join(output_dir, 'downsampled')
+        self.query_vertices = None
+        self.uv = None
     
     def save(self, result):
         os.makedirs(self.output_dir, exist_ok=True)
@@ -73,8 +75,9 @@ class HRN():
         folder_path = './face_module/LDT/Results'
         file_list = os.listdir(folder_path)
         os.makedirs(os.path.join(folder_path, 'objs'), exist_ok=True)
+        exclude = ["iteration_1.ply", "iteration_2.ply", "iteration_3.ply", "iteration_4.ply", "Rescaled.ply", "Splitted.ply"]
         for file_name in file_list:
-            if file_name.endswith('.ply'):
+            if (file_name.endswith('.ply') and (file_name not in exclude)):
                 file_path = os.path.join(folder_path, file_name)
                 mesh_ply = o3d.io.read_triangle_mesh(file_path)
                 mesh_ply.triangle_uvs = self.uv

@@ -1,7 +1,7 @@
-torch
+torch==2.1.1 #CUDA 12.1
 torchvision
 torchaudio
-tensorflow
+tensorflow==2.15.0
 "modelscope[cv]" -f https://modelscope.oss-cn-beijing.aliyuncs.com/releases/repo.html
 git+https://github.com/NVlabs/nvdiffrast.git
 git+https://github.com/facebookresearch/pytorch3d.git
@@ -18,9 +18,9 @@ phonemizer
 scipy
 tensorboard
 Unidecode
-transformers
+transformers==4.35.2
 tqdm
 loguru
-insightface
+insightface==0.7.3
 numpy==1.23.4
 open3d
