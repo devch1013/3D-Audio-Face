@@ -5,15 +5,21 @@ from pathlib import Path
 from loguru import logger
 import yaml
 import torch
+import open3d as o3d
 
 from face_module.MICA.configs.config import get_cfg_defaults
 from face_module.MICA.MICA import deterministic
+from face_module.HRN import HRN
 from utils.config import config
 from utils.savetowav import save_wav
 from modules.img2mesh import Image2Mesh
 from modules.mesh2blendshape import Mesh2Blendshape
 from modules.mesh2talk import Mesh2Talk
 from modules.voice2voice import Voice2Voice 
+
+from modelscope.models.cv.face_reconstruction.utils import write_obj
+from modelscope.outputs import OutputKeys
+from modelscope.pipelines import pipeline
 
 class TalkWithMe:
     def __init__(self):
@@ -28,11 +34,11 @@ class TalkWithMe:
     
         deterministic(42)
         
-        #######################
         start = time.time()
         logger.info("Load Image2Mesh Model")
         cp = time.time()
-        self.img2mesh = Image2Mesh(self.args)
+
+        self.img2mesh = HRN(output_dir='./hrn_output')
         print(f"\033[1;3;31mLoading Img2Mesh Took... \n\t{time.time() - cp}s\033[0m")
         
         logger.info("Load Mesh2Talk Model")
@@ -54,7 +60,8 @@ class TalkWithMe:
         with torch.no_grad():
             logger.info("Make Mesh from Image")
             cp = time.time()
-            self.img2mesh(image_path, face_name)
+            self.img2mesh(face_name, image_path)
+
             print(f"\033[1;3;31mRunning Image2Mesh Took... \n\t{time.time() - cp}s\033[0m")
             
             logger.info("Make Blendshapes")
@@ -68,13 +75,18 @@ class TalkWithMe:
             print(f"\033[1;3;31mRunning Voice2Voice Took... \n\t{time.time() - cp}s\033[0m")
             print("sampling rate: ",sampling_rate)
             
+            logger.info("Adding Textures Started")
+            cp = time.time()
+            self.img2mesh.make_textures()
+            print(f"\033[1;3;31mConverting to obj file with textures Took... \n\t{time.time() - cp}s\033[0m")
+
             logger.info("Make Talking Face with Audio")
             cp = time.time()
             self.mesh2talk(speech_array=result_audio, file_name=filename, result_path=self.args["ttf_param"]["result_path"])
             print(f"\033[1;3;31mRunning Mesh2Talk Took... \n\t{time.time() - cp}s\033[0m")
             print(self.args["tts_param"]["output_path"],":",filename)
             save_wav(result_audio, sampling_rate, filename, self.args["tts_param"]["output_path"])
-            
+
             logger.info("Finish Process")
             print(f"\033[1;3;31mRunning Process Took... \n\t{time.time() - start}s\033[0m")
         

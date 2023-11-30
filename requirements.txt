@@ -9,6 +9,7 @@ pymeshlab
 gdown
 openai
 openai-whisper
+rtree
 langchain
 Cython
 librosa
@@ -22,3 +23,4 @@ tqdm
 loguru
 insightface
 numpy==1.23.4
+open3d
