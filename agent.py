@@ -22,7 +22,7 @@ from modelscope.outputs import OutputKeys
 from modelscope.pipelines import pipeline
 
 class TalkWithMe:
-    def __init__(self):
+    def __init__(self, create_new=True):
         ### Utils ###
         with open('utils/configs.yml', 'r') as file:
             self.args = yaml.safe_load(file)
@@ -31,20 +31,23 @@ class TalkWithMe:
         device = self.args["general"]["device"]
         logger.info(f'torch device set to {device}')
         self.start_time = time.time()
+        self.create_new = create_new
     
         deterministic(42)
         
         start = time.time()
-        logger.info("Load Image2Mesh Model")
-        cp = time.time()
+        if self.create_new:
+            self.create_new = True
+            logger.info("Load Image2Mesh Model")
+            cp = time.time()
 
-        self.img2mesh = HRN(output_dir='./hrn_output')
-        print(f"\033[1;3;31mLoading Img2Mesh Took... \n\t{time.time() - cp}s\033[0m")
+            self.img2mesh = HRN(output_dir='./hrn_output')
+            print(f"\033[1;3;31mLoading Img2Mesh Took... \n\t{time.time() - cp}s\033[0m")
         
-        logger.info("Load Mesh2Talk Model")
-        cp = time.time()
-        self.mesh2talk  = Mesh2Talk(self.args)
-        print(f"\033[1;3;31mLoading Mesh2Talk Took... \n\t{time.time() - cp}s\033[0m")
+            logger.info("Load Mesh2Talk Model")
+            cp = time.time()
+            self.mesh2talk  = Mesh2Talk(self.args)
+            print(f"\033[1;3;31mLoading Mesh2Talk Took... \n\t{time.time() - cp}s\033[0m")
         
         logger.info("Load Voice2Voice Model")
         cp = time.time()
@@ -58,27 +61,28 @@ class TalkWithMe:
         start = time.time()
         
         with torch.no_grad():
-            logger.info("Make Mesh from Image")
-            cp = time.time()
-            self.img2mesh(face_name, image_path)
+            if self.create_new:
+                logger.info("Make Mesh from Image")
+                cp = time.time()
+                self.img2mesh(face_name, image_path)
 
-            print(f"\033[1;3;31mRunning Image2Mesh Took... \n\t{time.time() - cp}s\033[0m")
-            
-            logger.info("Make Blendshapes")
-            cp = time.time()
-            Mesh2Blendshape(os.path.join(self.args["mica_param"]["output_path"], f"{face_name}.ply"))
-            print(f"\033[1;3;31mRunning Mesh2Blendshape Took... \n\t{time.time() - cp}s\033[0m")
+                print(f"\033[1;3;31mRunning Image2Mesh Took... \n\t{time.time() - cp}s\033[0m")
+                
+                logger.info("Make Blendshapes")
+                cp = time.time()
+                Mesh2Blendshape(os.path.join(self.args["mica_param"]["output_path"], f"{face_name}.ply"))
+                print(f"\033[1;3;31mRunning Mesh2Blendshape Took... \n\t{time.time() - cp}s\033[0m")
+
+                logger.info("Adding Textures Started")
+                cp = time.time()
+                self.img2mesh.make_textures()
+                print(f"\033[1;3;31mConverting to obj file with textures Took... \n\t{time.time() - cp}s\033[0m")
         
             logger.info("Conversation Part Started")
             cp = time.time()
             result_audio, sampling_rate = self.voice2voice(input_audio_path)
             print(f"\033[1;3;31mRunning Voice2Voice Took... \n\t{time.time() - cp}s\033[0m")
             print("sampling rate: ",sampling_rate)
-            
-            logger.info("Adding Textures Started")
-            cp = time.time()
-            self.img2mesh.make_textures()
-            print(f"\033[1;3;31mConverting to obj file with textures Took... \n\t{time.time() - cp}s\033[0m")
 
             logger.info("Make Talking Face with Audio")
             cp = time.time()
@@ -93,8 +97,8 @@ class TalkWithMe:
         
         
 if __name__ == "__main__":
-    main_model = TalkWithMe()
+    main_model = TalkWithMe(create_new=True)
     image_path = "data/input_images/murphy.png"
     input_audio_path = "data/audio_input/myquestion2.m4a"
-    face_name = "woosung"
+    face_name = "murphy"
     main_model(image_path, input_audio_path, face_name)

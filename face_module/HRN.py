@@ -53,7 +53,7 @@ class HRN():
         ms.set_texture_per_mesh(textname=os.path.join(original_mesh_dir, 'hrn_mesh_mid.png'))
         ms.compute_selection_by_condition_per_face(condselect=condselect)
         ms.apply_selection_inverse(invfaces=True)
-        ms.meshing_decimation_quadric_edge_collapse_with_texture(targetfacenum=targetfacenum, preserveboundary=True, planarquadric=True, selected=True)
+        ms.meshing_decimation_quadric_edge_collapse_with_texture(targetfacenum=targetfacenum, preserveboundary=True, planarquadric=True, selected=True, preservenormal=True)
         
         os.makedirs(self.downsampled_dir, exist_ok=True)
         downsampled_output_path = os.path.join(self.downsampled_dir, 'hrn_mesh_mid.obj')
@@ -83,7 +83,7 @@ class HRN():
                 mesh_ply.triangle_uvs = self.uv
                 fn = file_name.split('.')[0]
                 output_obj_path = os.path.join(folder_path, f'objs/{fn}.obj')
-                o3d.io.write_triangle_mesh(output_obj_path, mesh_ply, write_triangle_uvs=True)
+                o3d.io.write_triangle_mesh(output_obj_path, mesh_ply, write_ascii=True, write_triangle_uvs=True, write_vertex_normals=True)
 
                 with open(output_obj_path, 'r') as file:
                     lines = file.readlines()
@@ -102,6 +102,39 @@ class HRN():
         shutil.copy(os.path.join(self.downsampled_dir, 'hrn_mesh_mid.obj.mtl'), os.path.join(folder_path, 'objs', 'hrn_mesh_mid.mtl')) 
         shutil.copy(os.path.join(self.downsampled_dir, 'hrn_mesh_mid.png'), os.path.join(folder_path, 'objs', 'hrn_mesh_mid.png')) 
     
+    def make_textures_ply(self):
+        uvs = np.asarray(self.uv)
+        folder_path = './face_module/LDT/Results'
+        file_list = os.listdir(folder_path)
+        os.makedirs(os.path.join(folder_path, 'plys'), exist_ok=True)
+        exclude = ["iteration_1.ply", "iteration_2.ply", "iteration_3.ply", "iteration_4.ply", "Rescaled.ply", "Splitted.ply"]
+        for file_name in file_list:
+            if (file_name.endswith('.ply') and (file_name not in exclude)):
+                with open(os.path.join(folder_path, file_name), 'r') as file:
+                    lines = file.readlines()
+                face_idx = 0
+                for i, line in enumerate(lines):
+                    if line.startswith('3 '):
+                        lines[i] = lines[i].strip() + " " + str(uv[face_idx][0]) + " " + str(uv[face_idx][1]) + "\n"
+                        face_idx += 1
+                lines.insert(2, "comment TextureFile hrn_mesh_mid.png\n")
+                with open(os.path.join(folder_path, 'plys', file_name), 'w') as file:
+                        file.writelines(lines)
+
+        shutil.copy(os.path.join(self.downsampled_dir, 'hrn_mesh_mid.png'), os.path.join(folder_path, 'plys', 'hrn_mesh_mid.png')) 
+
+    def convert_ply(self):
+        folder_path = './face_module/LDT/Results/objs'
+        file_list = os.listdir(folder_path)
+        os.makedirs(os.path.join(folder_path, 'plys'), exist_ok=True)
+        exclude = ["iteration_1.ply", "iteration_2.ply", "iteration_3.ply", "iteration_4.ply", "Rescaled.ply", "Splitted.ply"]
+        for file_name in file_list:
+            if (file_name.endswith('.ply') and (file_name not in exclude)):
+                ms = pymeshlab.MeshSet()
+                ms.load_new_mesh(os.path.join(folder_path, file_name))
+                ms.save_current_mesh(os.path.join(folder_path, 'plys', file_name), save_face_color=True, binary=False)
+
+
     def __call__(self, face_name, image_path):
         hrn_output = self.hrn(image_path)
         self.save(hrn_output)
@@ -110,5 +143,5 @@ class HRN():
         self.downsample(self.output_dir, face_name, targetfacenum=10000)
         mesh_obj = o3d.io.read_triangle_mesh(os.path.join(self.output_dir, 'downsampled', 'hrn_mesh_mid.obj'))
         self.uv = mesh_obj.triangle_uvs
-        o3d.io.write_triangle_mesh(f'./face_module/LDT/Inputs/{face_name}.ply', mesh_obj, write_triangle_uvs=True, write_ascii=True)
+        o3d.io.write_triangle_mesh(f'./face_module/LDT/Inputs/{face_name}.ply', mesh_obj, write_triangle_uvs=True, write_ascii=True, write_vertex_normals=True)
 
