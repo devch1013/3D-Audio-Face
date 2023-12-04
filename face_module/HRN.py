@@ -101,27 +101,6 @@ class HRN():
         
         shutil.copy(os.path.join(self.downsampled_dir, 'hrn_mesh_mid.obj.mtl'), os.path.join(folder_path, 'objs', 'hrn_mesh_mid.mtl')) 
         shutil.copy(os.path.join(self.downsampled_dir, 'hrn_mesh_mid.png'), os.path.join(folder_path, 'objs', 'hrn_mesh_mid.png')) 
-    
-    def make_textures_ply(self):
-        uvs = np.asarray(self.uv)
-        folder_path = './face_module/LDT/Results'
-        file_list = os.listdir(folder_path)
-        os.makedirs(os.path.join(folder_path, 'plys'), exist_ok=True)
-        exclude = ["iteration_1.ply", "iteration_2.ply", "iteration_3.ply", "iteration_4.ply", "Rescaled.ply", "Splitted.ply"]
-        for file_name in file_list:
-            if (file_name.endswith('.ply') and (file_name not in exclude)):
-                with open(os.path.join(folder_path, file_name), 'r') as file:
-                    lines = file.readlines()
-                face_idx = 0
-                for i, line in enumerate(lines):
-                    if line.startswith('3 '):
-                        lines[i] = lines[i].strip() + " " + str(uv[face_idx][0]) + " " + str(uv[face_idx][1]) + "\n"
-                        face_idx += 1
-                lines.insert(2, "comment TextureFile hrn_mesh_mid.png\n")
-                with open(os.path.join(folder_path, 'plys', file_name), 'w') as file:
-                        file.writelines(lines)
-
-        shutil.copy(os.path.join(self.downsampled_dir, 'hrn_mesh_mid.png'), os.path.join(folder_path, 'plys', 'hrn_mesh_mid.png')) 
 
     def convert_ply(self):
         folder_path = './face_module/LDT/Results/objs'
