@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, Request
 import uuid
 import random
 import numpy as np
@@ -7,7 +7,6 @@ from agent import TalkWithMe
 from fastapi.responses import FileResponse
 
 app = FastAPI()
-
 # model = TalkWithMe()
 model = None
 
@@ -67,10 +66,13 @@ bs_name = [
     "noseSneerRight",
 ]
 
+
 @app.post("/upload")
 async def upload_photo(image: UploadFile, audio: UploadFile):
+# async def upload_photo(request: Request):
+    # print(await request.form())
     UPLOAD_DIR = "data/"  # 이미지를 저장할 서버 경로
-
+    print("heelelelelelele")
     image_content = await image.read()
     audio_content = await audio.read()
     rand_num = str(random.randint(0, 9999999)).zfill(7)
@@ -90,7 +92,9 @@ async def upload_photo(image: UploadFile, audio: UploadFile):
 
 @app.get("/obj/{obj_id}", response_class=FileResponse)
 def get_obj_file(obj_id: str):
-    obj_path = f"/home/ubuntu/3d_temp/face_module/LDT/Inputs/{obj_id}.ply"
+    # obj_path = f"/home/ubuntu/3d_temp/face_module/LDT/Inputs/{obj_id}.ply"
+    obj_path = "/home/ubuntu/3d_temp/face_module/EmoTalk_release/anima.blend"
+    print("obj path: ", obj_path)
     return obj_path
 
 
@@ -104,23 +108,9 @@ def get_audio_file(audio_id: str):
 def get_bsweight_file(bsweight_id: str):
     bsweight_path = f"/home/ubuntu/3d_temp/data/result_emotalk/{bsweight_id}.npy"
     bsweight_list = np.load(bsweight_path).tolist()
-    # print(len(bsweight_list))
-    # bs_dict = get_bs_dict(bsweight_list)
+    print(len(bsweight_list[0]))
+    for i in range(len(bsweight_list)):
+        bsweight_list[i].insert(6, bsweight_list[i][6])
+        bsweight_list[i].insert(2, bsweight_list[i][2])
+        bsweight_list[i].pop(-1)
     return {"length":len(bsweight_list),"data": bsweight_list}
-
-
-def get_bs_dict(bs_list):
-    bs_dict = dict()
-    for bs in bs_name:
-        bs_dict[bs] = list()
-        
-    for i in range(len(bs_list)):
-        for j in range(len(bs_name)):
-            if j > 2 and j <= 6:
-                new_idx = j-1
-            elif j > 6:
-                new_idx = j-2
-            else:
-                new_idx = j
-            bs_dict[bs_name[j]].append(bs_list[i][new_idx])
-    return bs_dict
