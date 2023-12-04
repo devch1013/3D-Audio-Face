@@ -17,9 +17,6 @@ from modules.mesh2blendshape import Mesh2Blendshape
 from modules.mesh2talk import Mesh2Talk
 from modules.voice2voice import Voice2Voice 
 
-from modelscope.models.cv.face_reconstruction.utils import write_obj
-from modelscope.outputs import OutputKeys
-from modelscope.pipelines import pipeline
 
 class TalkWithMe:
     def __init__(self, create_new=True):
@@ -45,9 +42,10 @@ class TalkWithMe:
             print(f"\033[1;3;31mLoading Img2Mesh Took... \n\t{time.time() - cp}s\033[0m")
         
             logger.info("Load Mesh2Talk Model")
-            cp = time.time()
-            self.mesh2talk  = Mesh2Talk(self.args)
-            print(f"\033[1;3;31mLoading Mesh2Talk Took... \n\t{time.time() - cp}s\033[0m")
+        cp = time.time()
+
+        self.mesh2talk  = Mesh2Talk(self.args)
+        print(f"\033[1;3;31mLoading Mesh2Talk Took... \n\t{time.time() - cp}s\033[0m")
         
         logger.info("Load Voice2Voice Model")
         cp = time.time()
@@ -97,7 +95,7 @@ class TalkWithMe:
         
         
 if __name__ == "__main__":
-    main_model = TalkWithMe(create_new=True)
+    main_model = TalkWithMe(create_new=False)
     image_path = "data/input_images/murphy.png"
     input_audio_path = "data/audio_input/myquestion2.m4a"
     face_name = "murphy"

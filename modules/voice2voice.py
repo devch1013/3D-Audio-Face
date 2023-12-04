@@ -32,6 +32,6 @@ class Voice2Voice:
         audio, rate = TextToSpeech(self.tts_model, answer, self.hps)
 
         return (
-            librosa.resample(audio, orig_sr=rate[0], target_sr=16000),
+            librosa.resample(audio, orig_sr=rate[0], target_sr=self.hps.data.sampling_rate),
             self.hps.data.sampling_rate,
         )
