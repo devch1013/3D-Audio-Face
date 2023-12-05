@@ -16,6 +16,8 @@ __pycache__/
 **.txt
 **.png
 **.gif
+**.whl
+**.blend
 slurm-*
 
 *.ipynb

@@ -98,6 +98,14 @@ def get_obj_file(obj_id: str):
     return obj_path
 
 
+@app.get("/texture/{texture_id}", response_class=FileResponse)
+def get_texture_file(texture_id: str):
+    texture_path = f"/home/ubuntu/3d_temp/face_module/LDT/Inputs/{texture_id}.png"
+    # texture_path = "/home/ubuntu/3d_temp/face_module/EmoTalk_release/anima.blend"
+    print("texture path: ", texture_path)
+    return texture_path
+
+
 @app.get("/audio/{audio_id}", response_class=FileResponse)
 def get_audio_file(audio_id: str):
     audio_path = f"/home/ubuntu/3d_temp/data/results/{audio_id}.wav"
