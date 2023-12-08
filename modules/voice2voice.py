@@ -46,9 +46,7 @@ class Voice2Voice:
 
     def __call__(self, input_audio_path: str):
         result = self.stt_model.transcribe(input_audio_path)  # m4a, wav 등등 다 가능
-        answer = self.conversation_agent(
-            "the question is " + result["text"] + ", answer briefly to this question"
-        )
+        answer = self.conversation_agent(result["text"])
         print("answer: ", answer)
         # answer = "To re-log into GitHub and push commits in a remote server, you will need to first log into your GitHub account. Then, you will need to navigate to the repository you want to push commits to."
         audio, rate = TextToSpeech(self.tts_model, answer, self.hps)
