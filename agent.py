@@ -86,6 +86,8 @@ class TalkWithMe:
             make_blendshape(face_name, meme = "obj")
             logger.info("Finish face Process")
             print(f"\033[1;3;31mRunning Process Took... \n\t{time.time() - start}s\033[0m")
+            _ = self.voice2voice.first()
+            print("\033[1;3;32mFriendly chatbot is waving at you. Start conversation!\033[0m")
             
     def conversation(self, audio_path, conversation_name):
         logger.info("Conversation Part Started")
@@ -149,8 +151,8 @@ class TalkWithMe:
         
 if __name__ == "__main__":
     main_model = TalkWithMe(conversation_only=False)
-    image_path = "data/input_images/gang.jpg"
+    image_path = "data/input_images/melisa.jpg"
     input_audio_path = "data/audio_input/myquestion2.m4a"
-    face_name = "gang"
+    face_name = "melisa"
     main_model.make_fbx(image_path, face_name)
     # main_model(image_path, input_audio_path, face_name)
