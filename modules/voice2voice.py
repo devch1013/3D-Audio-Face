@@ -29,6 +29,7 @@ class Voice2Voice:
             "the question is " + result["text"] + ", answer briefly to this question"
         )
         print("answer: ", answer)
+        # answer = "To re-log into GitHub and push commits in a remote server, you will need to first log into your GitHub account. Then, you will need to navigate to the repository you want to push commits to."
         audio, rate = TextToSpeech(self.tts_model, answer, self.hps)
 
         return (

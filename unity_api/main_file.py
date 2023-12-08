@@ -3,13 +3,12 @@ import uuid
 import random
 import numpy as np
 import os
-from agent import TalkWithMe
+# from agent import TalkWithMe
 from fastapi.responses import FileResponse
 
 app = FastAPI()
-print("app loaded")
-model = TalkWithMe(conversation_only=True)
-# model = None
+# model = TalkWithMe()
+model = None
 
 bs_name = [
     "browDownLeft",
@@ -69,36 +68,24 @@ bs_name = [
 
 
 @app.post("/upload")
-async def upload_photo(image: UploadFile):
+async def upload_photo(image: UploadFile, audio: UploadFile):
 # async def upload_photo(request: Request):
     # print(await request.form())
-    UPLOAD_DIR = "data/input_images"  # 이미지를 저장할 서버 경로
+    UPLOAD_DIR = "data/"  # 이미지를 저장할 서버 경로
+    print("heelelelelelele")
     image_content = await image.read()
-    rand_num = str(random.randint(0, 9999999)).zfill(7)
-    image = f"{rand_num}.jpg"
-    image_path = os.path.join(UPLOAD_DIR, image)
-    with open(image_path, "wb") as fp:
-        fp.write(image_content)
-
-    model.make_fbx(image_path=image_path, face_name=rand_num)
-
-    return {"id": rand_num}
-
-
-@app.post("/conversation")
-async def conversation(audio: UploadFile):
-# async def upload_photo(request: Request):
-    # print(await request.form())
-    UPLOAD_DIR = "data/audio_input"  # 이미지를 저장할 서버 경로
     audio_content = await audio.read()
     rand_num = str(random.randint(0, 9999999)).zfill(7)
-    audio = f"{rand_num}.wav"
+    image = f"input_images/{rand_num}.jpg"
+    audio = f"audio_input/{rand_num}.m4a"
+    image_path = os.path.join(UPLOAD_DIR, image)
     audio_path = os.path.join(UPLOAD_DIR, audio)
+    with open(image_path, "wb") as fp:
+        fp.write(image_content)
     with open(audio_path, "wb") as fp:
         fp.write(audio_content)
 
-    model.conversation(audio_path=audio_path, conversation_name = rand_num)
-    # model.conversation(audio_path="/home/ubuntu/3d_temp/data/audio_input/myquestion2.m4a", conversation_name = rand_num)
+    model(image_path=image_path, input_audio_path=audio_path, face_name=rand_num)
 
     return {"id": rand_num}
 
@@ -106,14 +93,13 @@ async def conversation(audio: UploadFile):
 @app.get("/fbx/{fbx_id}", response_class=FileResponse)
 def get_fbx_file(fbx_id: str):
     fbx_path = f"/home/ubuntu/3d_temp/data/result_fbx/{fbx_id}.fbx"
-    # fbx_path = "/home/ubuntu/3d_temp/face_module/EmoTalk_release/anima.blend"
     print("fbx path: ", fbx_path)
     return fbx_path
 
 
 @app.get("/texture/{texture_id}", response_class=FileResponse)
 def get_texture_file(texture_id: str):
-    texture_path = f"/home/ubuntu/3d_temp/data/result_fbx/{texture_id}.png"
+    texture_path = f"/home/ubuntu/3d_temp/face_module/LDT/Inputs/{texture_id}.png"
     # texture_path = "/home/ubuntu/3d_temp/face_module/EmoTalk_release/anima.blend"
     print("texture path: ", texture_path)
     return texture_path

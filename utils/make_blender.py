@@ -56,15 +56,21 @@ bs_name = [
     "noseSneerRight",
 ]
 
-def make_blendshape(file_name:str, folder_path:str="/home/ubuntu/3d_temp/face_module/LDT/Results"):
+def make_blendshape(file_name:str, meme:str = "ply", folder_path:str="/home/ubuntu/3d_temp/face_module/LDT/Results"):
     
+    
+    for obj in bpy.data.objects:
+        bpy.data.objects.remove(obj)
+    if meme == "ply":
+        for name in bs_name:
+            bpy.ops.wm.ply_import(filepath=f"{folder_path}/{name}.ply")
+    elif meme == "obj":
+        for name in bs_name:
+            bpy.ops.wm.obj_import(filepath=f"{folder_path}/objs/{name}.obj")
+    else:
+        raise Exception("Choose valid meme of object")
 
-    for name in bs_name:
-        bpy.ops.wm.ply_import(filepath=f"{folder_path}/{name}.ply")
-
-    bpy.data.objects.remove(bpy.data.objects["Camera"])
-    bpy.data.objects.remove(bpy.data.objects["Light"])
-    bpy.data.objects.remove(bpy.data.objects["Cube"])
+    
     bpy.ops.object.select_all(action='DESELECT')
         
     for o in bpy.data.objects:
@@ -78,4 +84,9 @@ def make_blendshape(file_name:str, folder_path:str="/home/ubuntu/3d_temp/face_mo
     bpy.ops.object.delete()
 
     # Save the modified main PLY file
-    bpy.ops.wm.save_as_mainfile(filepath=f"/home/ubuntu/3d_temp/data/result_blend/{file_name}.blend")
+    # bpy.ops.wm.save_as_mainfile(filepath=f"/home/ubuntu/3d_temp/data/result_blend/{file_name}.blend")
+    bpy.ops.export_scene.fbx(filepath=f"/home/ubuntu/3d_temp/data/result_fbx/{file_name}.fbx")
+    
+    
+if __name__ == "__main__":
+    make_blendshape(file_name = "test")

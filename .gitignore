@@ -19,7 +19,8 @@ __pycache__/
 **.whl
 **.blend
 slurm-*
-
+**.fbx
+**.mtl
 *.ipynb
 *.pickle
 *.npy

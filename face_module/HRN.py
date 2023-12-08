@@ -1,7 +1,7 @@
 import os
 import cv2
 import open3d as o3d
-from moviepy.editor import ImageSequenceClip
+# from moviepy.editor import ImageSequenceClip
 from modelscope.models.cv.face_reconstruction.utils import write_obj
 from modelscope.outputs import OutputKeys
 from modelscope.pipelines import pipeline

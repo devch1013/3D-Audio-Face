@@ -20,6 +20,7 @@ class ChatGPTConversation:
         )
         
     def __call__(self, prompt):
+        self.conversation.memory.clear()
         text = self.conversation.predict(input=prompt)
         return text
     
