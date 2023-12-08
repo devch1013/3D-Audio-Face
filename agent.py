@@ -148,9 +148,9 @@ class TalkWithMe:
         
         
 if __name__ == "__main__":
-    main_model = TalkWithMe(conversation_only=True)
-    image_path = "data/input_images/venedict.jpg"
+    main_model = TalkWithMe(conversation_only=False)
+    image_path = "data/input_images/gang.jpg"
     input_audio_path = "data/audio_input/myquestion2.m4a"
-    face_name = "venedict"
+    face_name = "gang"
     main_model.make_fbx(image_path, face_name)
     # main_model(image_path, input_audio_path, face_name)

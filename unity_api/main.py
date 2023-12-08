@@ -8,7 +8,7 @@ from fastapi.responses import FileResponse
 
 app = FastAPI()
 print("app loaded")
-model = TalkWithMe(conversation_only=True)
+model = TalkWithMe(conversation_only=False)
 # model = None
 
 bs_name = [
