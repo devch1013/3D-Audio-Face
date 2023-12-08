@@ -46,7 +46,7 @@ class TalkWithMe:
             logger.info("Load Image2Mesh Model")
             cp = time.time()
 
-            self.img2mesh = HRN(output_dir='/home/ubuntu/3d_temp/data/hrn_output')
+            self.img2mesh = HRN(output_dir='data/hrn_output')
             print(f"\033[1;3;31mLoading Img2Mesh Took... \n\t{time.time() - cp}s\033[0m")
         
             logger.info("Load Mesh2Talk Model")
@@ -82,7 +82,7 @@ class TalkWithMe:
             cp = time.time()
             self.img2mesh.make_textures()
             print(f"\033[1;3;31mConverting to obj file with textures Took... \n\t{time.time() - cp}s\033[0m")
-            shutil.copyfile("/home/ubuntu/3d_temp/data/hrn_output/hrn_mesh_mid.png", f"/home/ubuntu/3d_temp/data/result_fbx/{face_name}.png")
+            shutil.copyfile("data/hrn_output/hrn_mesh_mid.png", f"data/result_fbx/{face_name}.png")
             make_blendshape(face_name, meme = "obj")
             logger.info("Finish face Process")
             print(f"\033[1;3;31mRunning Process Took... \n\t{time.time() - start}s\033[0m")
