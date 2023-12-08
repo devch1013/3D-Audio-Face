@@ -121,3 +121,16 @@ def get_bsweight_file(bsweight_id: str):
         bsweight_list[i].insert(2, bsweight_list[i][2])
         bsweight_list[i].pop(-1)
     return {"length":len(bsweight_list),"data": bsweight_list}
+
+
+
+@app.get("/flame/{bsweight_id}")
+def get_bsweight_file(bsweight_id: str):
+    bsweight_path = f"/home/ubuntu/3d_temp/data/result_emotalk/{bsweight_id}.npy"
+    bsweight_list = np.load(bsweight_path).tolist()
+    print(len(bsweight_list[0]))
+    for i in range(len(bsweight_list)):
+        bsweight_list[i].insert(6, bsweight_list[i][6])
+        bsweight_list[i].insert(2, bsweight_list[i][2])
+        bsweight_list[i].pop(-1)
+    return {"length":len(bsweight_list),"data": bsweight_list}
