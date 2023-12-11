@@ -36,8 +36,8 @@ def Mesh2Blendshape(path):
     print("LDT Complete.")
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Make Blendshape models of given 3D Avatar')
-    parser.add_argument('--ldt_path', default="face_module/LDT/Inputs/Mario.ply", type=str, help='path for 3D Avatar')
-    args = parser.parse_args()
-
-    Mesh2Blendshape(args.ldt_path)
+    # parser = argparse.ArgumentParser(description='Make Blendshape models of given 3D Avatar')
+    # parser.add_argument('--ldt_path', default="face_module/LDT/Inputs/Mario.ply", type=str, help='path for 3D Avatar')
+    # args = parser.parse_args()
+    path = ""
+    Mesh2Blendshape(path)

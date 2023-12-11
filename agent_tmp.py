@@ -12,7 +12,7 @@ import shutil
 
 # from face_module.MICA.configs.config import get_cfg_defaults
 # from face_module.MICA.MICA import deterministic
-from face_module.HRN import HRN
+from face_module.HRN_tmp import HRN
 from utils.config import config
 from utils.savetowav import save_wav
 from utils.make_blender import make_blendshape
@@ -153,6 +153,6 @@ if __name__ == "__main__":
     main_model = TalkWithMe(conversation_only=False)
     image_path = "data/input_images/me2.jpg"
     input_audio_path = "data/audio_input/myquestion2.m4a"
-    face_name = "me2"
+    face_name = "me2222222222222222222222"
     main_model.make_fbx(image_path, face_name)
     # main_model(image_path, input_audio_path, face_name)
