@@ -15,7 +15,7 @@ import shutil
 from face_module.HRN import HRN
 from utils.config import config
 from utils.savetowav import save_wav
-from utils.make_blender import make_blendshape
+# from utils.make_blender import make_blendshape
 from utils.deterministic import deterministic
 from modules.img2mesh import Image2Mesh
 from modules.mesh2blendshape import Mesh2Blendshape
@@ -46,9 +46,7 @@ class TalkWithMe:
             logger.info("Load Image2Mesh Model")
             cp = time.time()
 
-
             self.img2mesh = HRN(output_dir='./data/hrn_output')
-
             print(f"\033[1;3;31mLoading Img2Mesh Took... \n\t{time.time() - cp}s\033[0m")
         
             logger.info("Load Mesh2Talk Model")
@@ -63,6 +61,7 @@ class TalkWithMe:
         print(f"\033[1;3;31mLoading Voice2Voice Took... \n\t{time.time() - cp}s\033[0m")
         logger.info("Model Load Finished")
         print(f"\033[1;3;31mLoading Models Took... \n\t{time.time() - start}s\033[0m")
+        print("\033[1;3;32mFriendly chatbot is waving at you. Start conversation!\033[0m")
     
     def make_fbx(self, image_path, face_name):
         start = time.time()
@@ -84,11 +83,10 @@ class TalkWithMe:
             cp = time.time()
             self.img2mesh.make_textures()
             print(f"\033[1;3;31mConverting to obj file with textures Took... \n\t{time.time() - cp}s\033[0m")
-            shutil.copyfile("data/hrn_output/hrn_mesh_mid.png", f"data/result_fbx/{face_name}.png")
-            make_blendshape(face_name, meme = "obj")
+            # shutil.copyfile("/home/ubuntu/3d_temp/data/hrn_output/hrn_mesh_mid.png", f"/home/ubuntu/3d_temp/data/result_fbx/{face_name}.png")
+            # make_blendshape(face_name, meme = "obj")
             logger.info("Finish face Process")
             print(f"\033[1;3;31mRunning Process Took... \n\t{time.time() - start}s\033[0m")
-            print("\033[1;3;32mFriendly chatbot is waving at you. Start conversation!\033[0m")
             
     def conversation(self, audio_path, conversation_name):
         logger.info("Conversation Part Started")
@@ -107,8 +105,7 @@ class TalkWithMe:
 
         logger.info("Finish Process")
         print(f"\033[1;3;31mRunning Process Took... \n\t{time.time() - start}s\033[0m")
-        
-        
+
     
     def __call__(self, image_path, input_audio_path, face_name):
         filename = input_audio_path.split('/')[-1].split('.')[0]
@@ -149,10 +146,11 @@ class TalkWithMe:
             print(f"\033[1;3;31mRunning Process Took... \n\t{time.time() - start}s\033[0m")
         
         
+        
 if __name__ == "__main__":
-    main_model = TalkWithMe(conversation_only=False)
-    image_path = "data/input_images/me2.jpg"
+    main_model = TalkWithMe(conversation_only=True)
+    image_path = "data/input_images/haerin.jpg"
     input_audio_path = "data/audio_input/myquestion2.m4a"
-    face_name = "me2"
-    main_model.make_fbx(image_path, face_name)
-    # main_model(image_path, input_audio_path, face_name)
+    face_name = "haerin"
+    # main_model.make_fbx(image_path, face_name)
+    main_model.conversation(input_audio_path, face_name)
