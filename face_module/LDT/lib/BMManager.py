@@ -18,6 +18,7 @@ import concurrent.futures
 from queue import Queue
 from loguru import logger
 from tqdm import tqdm
+import threading
 
 
 APP_ROOT = path.dirname( path.abspath( __file__ ) )
@@ -1821,6 +1822,24 @@ class BMMng():
 
         logger.info(f"Make Blendshapes")
         start = time.time()
+        threads = []
+        # def make_mesh(meshnum):
+        #     currMesh = dtf(self.Correspondences, self.SOURCE_LANDMARKS, self.AVATAR_LANDMARKS, self.BlendShapes[meshnum+1], self.BlendShapes[0], self.Avatar[0], PartsSize, PartsRot, Ed_A, Ed_ATA, self.Es_ATA, self.Es_ATc, self.Ei_ATA, self.Ei_ATc, self.backlandmark_list)
+        #     # print("Generating Avatar blendshape ", meshnum)
+        #     elapsed_time = currMesh.deformation_transfer()
+        #     self.Avatar.append(currMesh)
+        #     name = f"{self.blend_name[meshnum]}.ply"
+        #     print(f"{name} completed")
+        #     self.SaveMesh("face_module/LDT/Results/", name, self.Avatar[meshnum+1].Vertices, self.Avatar[0].Faces, self.Avatar[0].Textures, self.Avatar[0].TexName, self.Avatar[0].Flags)
+        #     # logger.info(f"Saving {name} (Elapsed time: {elapsed_time:.5f})")
+        # for meshnum in tqdm(range(len(self.blend_name))):
+        #     t = threading.Thread(target=make_mesh, args=[meshnum])
+        #     t.start()
+        #     threads.append(t)
+        # for thread in threads:
+        #     thread.join()
+
+
         for meshnum in tqdm(range(len(self.blend_name))):
             # if ((meshnum > 1 and meshnum < 14) or meshnum == 17 or meshnum == 18 or meshnum == 19 or meshnum == 22 or meshnum == 26 
             # or meshnum == 27 or meshnum == 34 or meshnum == 35 or meshnum == 42):
@@ -1834,6 +1853,11 @@ class BMMng():
             self.SaveMesh("face_module/LDT/Results/", name, self.Avatar[i+1].Vertices, self.Avatar[0].Faces, self.Avatar[0].Textures, self.Avatar[0].TexName, self.Avatar[0].Flags)
             # logger.info(f"Saving {name} (Elapsed time: {elapsed_time:.5f})")
             i += 1
+
+            
+        
+        
+        
         # logger.info(f"Make Blendshapes")
 
         elapsed_time = time.time()-start

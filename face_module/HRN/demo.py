@@ -63,11 +63,11 @@ if __name__ == '__main__':
                         help='name of the experiment. It decides where to store samples and models')
     parser.add_argument('--epoch', type=str, default='10', help='which epoch to load? set to latest to use latest cached model')
 
-    parser.add_argument('--input_type', type=str, default='single_view',  # or 'multi_view'
+    parser.add_argument('--input_type', type=str, default='multi_view',  # or 'multi_view'
                         help='reconstruct from single-view or multi-view')
-    parser.add_argument('--input_root', type=str, default='./assets/examples/single_view_image',
+    parser.add_argument('--input_root', type=str, default='./assets/examples/my_multiview',
                         help='directory of input images')
-    parser.add_argument('--output_root', type=str, default='./assets/examples/single_view_image_results',
+    parser.add_argument('--output_root', type=str, default='./assets/examples/my_multiview_view_image_results',
                         help='directory for saving results')
 
     args = parser.parse_args()

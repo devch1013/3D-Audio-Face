@@ -35,7 +35,8 @@ class Reconstructor():
         self.model.eval()
         self.model.set_render(opt, image_res=512)
 
-        self.lm_sess = face_alignment.FaceAlignment(face_alignment.LandmarksType._3D, flip_input=False)
+        # self.lm_sess = face_alignment.FaceAlignment(face_alignment.LandmarksType._3D, flip_input=False)
+        self.lm_sess = face_alignment.FaceAlignment(face_alignment.LandmarksType.THREE_D, flip_input=False)
 
         config = tf.ConfigProto(allow_soft_placement=True)
         config.gpu_options.per_process_gpu_memory_fraction = 0.2

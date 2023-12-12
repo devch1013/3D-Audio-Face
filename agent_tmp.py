@@ -12,7 +12,7 @@ import shutil
 
 # from face_module.MICA.configs.config import get_cfg_defaults
 # from face_module.MICA.MICA import deterministic
-from face_module.HRN import HRN
+from face_module.HRN_tmp import HRN
 from utils.config import config
 from utils.savetowav import save_wav
 from utils.make_blender import make_blendshape
@@ -45,6 +45,7 @@ class TalkWithMe:
         if self.conversation_only == False:
             logger.info("Load Image2Mesh Model")
             cp = time.time()
+
             self.img2mesh = HRN(output_dir='data/hrn_output')
             print(f"\033[1;3;31mLoading Img2Mesh Took... \n\t{time.time() - cp}s\033[0m")
         
@@ -85,6 +86,7 @@ class TalkWithMe:
             make_blendshape(face_name, meme = "obj")
             logger.info("Finish face Process")
             print(f"\033[1;3;31mRunning Process Took... \n\t{time.time() - start}s\033[0m")
+            _ = self.voice2voice.first()
             print("\033[1;3;32mFriendly chatbot is waving at you. Start conversation!\033[0m")
             
     def conversation(self, audio_path, conversation_name):
@@ -146,10 +148,11 @@ class TalkWithMe:
             print(f"\033[1;3;31mRunning Process Took... \n\t{time.time() - start}s\033[0m")
         
         
+        
 if __name__ == "__main__":
     main_model = TalkWithMe(conversation_only=False)
     image_path = "data/input_images/me2.jpg"
     input_audio_path = "data/audio_input/myquestion2.m4a"
-    face_name = "me2"
+    face_name = "me2222222222222222222222"
     main_model.make_fbx(image_path, face_name)
     # main_model(image_path, input_audio_path, face_name)
