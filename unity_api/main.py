@@ -98,36 +98,36 @@ async def conversation(audio: UploadFile):
         fp.write(audio_content)
 
     model.conversation(audio_path=audio_path, conversation_name = rand_num)
-    # model.conversation(audio_path="/home/ubuntu/3d_temp/data/audio_input/myquestion2.m4a", conversation_name = rand_num)
+    # model.conversation(audio_path="data/audio_input/myquestion2.m4a", conversation_name = rand_num)
 
     return {"id": rand_num}
 
 
 @app.get("/fbx/{fbx_id}", response_class=FileResponse)
 def get_fbx_file(fbx_id: str):
-    fbx_path = f"/home/ubuntu/3d_temp/data/result_fbx/{fbx_id}.fbx"
-    # fbx_path = "/home/ubuntu/3d_temp/face_module/EmoTalk_release/anima.blend"
+    fbx_path = f"data/result_fbx/{fbx_id}.fbx"
+    # fbx_path = "face_module/EmoTalk_release/anima.blend"
     print("fbx path: ", fbx_path)
     return fbx_path
 
 
 @app.get("/texture/{texture_id}", response_class=FileResponse)
 def get_texture_file(texture_id: str):
-    texture_path = f"/home/ubuntu/3d_temp/data/result_fbx/{texture_id}.png"
-    # texture_path = "/home/ubuntu/3d_temp/face_module/EmoTalk_release/anima.blend"
+    texture_path = f"data/result_fbx/{texture_id}.png"
+    # texture_path = "face_module/EmoTalk_release/anima.blend"
     print("texture path: ", texture_path)
     return texture_path
 
 
 @app.get("/audio/{audio_id}", response_class=FileResponse)
 def get_audio_file(audio_id: str):
-    audio_path = f"/home/ubuntu/3d_temp/data/results/{audio_id}.wav"
+    audio_path = f"data/results/{audio_id}.wav"
     return audio_path
 
 
 @app.get("/bsweight/{bsweight_id}")
 def get_bsweight_file(bsweight_id: str):
-    bsweight_path = f"/home/ubuntu/3d_temp/data/result_emotalk/{bsweight_id}.npy"
+    bsweight_path = f"data/result_emotalk/{bsweight_id}.npy"
     bsweight_list = np.load(bsweight_path).tolist()
     print(len(bsweight_list[0]))
     for i in range(len(bsweight_list)):
