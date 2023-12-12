@@ -1827,7 +1827,6 @@ class BMMng():
             #     continue
             # else:
             start = time.time()
-            logger.info(f"Saving {name} (Elapsed time: {elapsed_time:.5f})")
             currMesh = dtf(self.Correspondences, self.SOURCE_LANDMARKS, self.AVATAR_LANDMARKS, self.BlendShapes[meshnum+1], self.BlendShapes[0], self.Avatar[0], PartsSize, PartsRot, Ed_A, Ed_ATA, self.Es_ATA, self.Es_ATc, self.Ei_ATA, self.Ei_ATc, self.backlandmark_list)
             # print("Generating Avatar blendshape ", meshnum)
             elapsed_time = currMesh.deformation_transfer()
