@@ -45,10 +45,7 @@ class TalkWithMe:
         if self.conversation_only == False:
             logger.info("Load Image2Mesh Model")
             cp = time.time()
-
-
-            self.img2mesh = HRN(output_dir='./data/hrn_output')
-
+            self.img2mesh = HRN(output_dir='data/hrn_output')
             print(f"\033[1;3;31mLoading Img2Mesh Took... \n\t{time.time() - cp}s\033[0m")
         
             logger.info("Load Mesh2Talk Model")

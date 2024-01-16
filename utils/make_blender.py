@@ -56,7 +56,7 @@ bs_name = [
     "noseSneerRight",
 ]
 
-def make_blendshape(file_name:str, meme:str = "ply", folder_path:str="/home/ubuntu/3d_temp/face_module/LDT/Results"):
+def make_blendshape(file_name:str, meme:str = "ply", folder_path:str="face_module/LDT/Results"):
     
     
     for obj in bpy.data.objects:
@@ -84,8 +84,8 @@ def make_blendshape(file_name:str, meme:str = "ply", folder_path:str="/home/ubun
     bpy.ops.object.delete()
 
     # Save the modified main PLY file
-    # bpy.ops.wm.save_as_mainfile(filepath=f"/home/ubuntu/3d_temp/data/result_blend/{file_name}.blend")
-    bpy.ops.export_scene.fbx(filepath=f"/home/ubuntu/3d_temp/data/result_fbx/{file_name}.fbx")
+    # bpy.ops.wm.save_as_mainfile(filepath=f"data/result_blend/{file_name}.blend")
+    bpy.ops.export_scene.fbx(filepath=f"data/result_fbx/{file_name}.fbx")
     
     
 if __name__ == "__main__":

@@ -8,7 +8,7 @@ import numpy as np
 from PIL import Image
 from PIL import ImageTk
 import tkinter as tk
-from face_module.LDT.lib import BMManager
+from face_module.LDT.lib import BMManager_thread as BMManager
 
 def Mesh2Blendshape(path):
     print("******Load given Blendshape meshes******")
