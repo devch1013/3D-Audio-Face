@@ -15,9 +15,13 @@ Codes for audio driven 3D face generation
 
     since texturemap in pymeshlab only supports png files
 
+백엔드 서버 실행
+```
+uvicorn unity_api.main:app --host 0.0.0.0
+```
 
-keys.ini 파일 형태
-[OPENAI]
+keys.ini 파일 형태  
+[OPENAI]  
 OPENAI_API_KEY=key
 
 TODO : 236, 1824번째줄 어떻게 좀 수정하면 빨라질거같은데 둘다 병렬연산될거같아서
