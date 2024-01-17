@@ -1,5 +1,7 @@
 Codes for audio driven 3D face generation
 
+python version: 3.10.13
+
 1. run install.sh file (Not verified yet, so check files and dependencies)
 2. run download_weight.sh file
 3. place keys.ini at ./talk_module/LLM/keys.ini
