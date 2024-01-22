@@ -23,7 +23,7 @@ from modules.mesh2blendshape import Mesh2Blendshape
 from modules.mesh2talk import Mesh2Talk
 from modules.voice2voice import Voice2Voice 
 
-
+from talk_module.VALLEX.TTS import init_emotion
 
 class TalkWithMe:
     def __init__(self, conversation_only=False):
@@ -59,6 +59,8 @@ class TalkWithMe:
         logger.info("Load Voice2Voice Model")
         cp = time.time()
         self.voice2voice = Voice2Voice(self.args)
+        logger.info("Initializing Emotions")
+        init_emotion()
         print(f"\033[1;3;31mLoading Voice2Voice Took... \n\t{time.time() - cp}s\033[0m")
         logger.info("Model Load Finished")
         print(f"\033[1;3;31mLoading Models Took... \n\t{time.time() - start}s\033[0m")
@@ -150,8 +152,7 @@ class TalkWithMe:
         
         
 if __name__ == "__main__":
-    # sys.path.append('.')
-    # sys.path.append('./talk_module/VALLEX')
+    sys.path.append('/home/elicer/talk2yourself/talk_module')
     main_model = TalkWithMe(conversation_only=True)
     image_path = "data/input_images/haerin.jpg"
     input_audio_path = "data/audio_input/myquestion2.m4a"

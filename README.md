@@ -29,6 +29,5 @@ OPENAI_API_KEY=key
 TODO : 236, 1824번째줄 어떻게 좀 수정하면 빨라질거같은데 둘다 병렬연산될거같아서
 
 VALLEX 넣으면서 추가된내용 > sh 파일들에 아직 미반영
-1. VALLEX의 TTS.py에 init 보면 절대경로로 된거 하나있고
-2. talk_module/VALLEX/utils/g2p/__init__.py 에도 하나있음
-3. 나머지 weight 같은거는 처음에 실행하면 알아서 받아짐
+## TODO : VALLE 가 긴 Output은 처리를 못해서 문장 단위로 끊어서 해야할듯
+## 레포에도 Max 22 Second라고 하는데 우리지금 계속 돌리는게 20초가량이라 약간 될때도 있고 안될떄도 있음
