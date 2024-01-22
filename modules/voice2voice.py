@@ -4,7 +4,9 @@ from loguru import logger
 
 from talk_module.LLM.chat import ChatGPTConversation
 from talk_module.vits.TTS import TextToSpeech, load_TTS
-from talk_module.VALLEX.TTS import TextToSpeech as TextToSpeechVALLEX, init_emotion
+from talk_module.VALLEX_C.TTS import TextToSpeech as TextToSpeechVALLEX, init_emotion
+
+# from talk_module.VALLEX_C.TTS import TextToSpeech as TextToSpeechVALLEX, init_emotion
 
 class Voice2Voice:
     def __init__(self, args):
@@ -63,8 +65,8 @@ class Voice2Voice:
         # answer = "To re-log into GitHub and push commits in a remote server, you will need to first log into your GitHub account. Then, you will need to navigate to the repository you want to push commits to."
         
         # init_emotion()
-        # audio, rate = TextToSpeechVALLEX('surprised', answer)
+        audio, rate = TextToSpeechVALLEX('surprised', answer)
         # 여기서 GPT가 감정을 내뱉게 해서 하면될듯
-        audio, rate = TextToSpeechVALLEX('fearful', "Can I speak short sentences?")
+        # audio, rate = TextToSpeechVALLEX('fearful', "Can I speak short sentences?")
 
         return audio, rate

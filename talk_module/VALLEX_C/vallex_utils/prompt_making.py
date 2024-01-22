@@ -7,16 +7,16 @@ import whisper
 langid.set_languages(['en', 'zh', 'ja'])
 
 import numpy as np
-from talk_module.VALLEX.vallex_data.tokenizer import (
+from talk_module.VALLEX_C.vallex_data.tokenizer import (
     AudioTokenizer,
     tokenize_audio,
 )
-from talk_module.VALLEX.vallex_data.collation import get_text_token_collater
-from talk_module.VALLEX.vallex_utils.g2p import PhonemeBpeTokenizer
+from talk_module.VALLEX_C.vallex_data.collation import get_text_token_collater
+from talk_module.VALLEX_C.vallex_utils.g2p import PhonemeBpeTokenizer
 
-from talk_module.VALLEX.macros import *
+from talk_module.VALLEX_C.macros import *
 
-text_tokenizer = PhonemeBpeTokenizer(tokenizer_path="./talk_module/VALLEX/vallex_utils/g2p/bpe_69.json")
+text_tokenizer = PhonemeBpeTokenizer(tokenizer_path="./talk_module/VALLEX_C/vallex_utils/g2p/bpe_69.json")
 text_collater = get_text_token_collater()
 
 device = torch.device("cpu")
@@ -79,7 +79,7 @@ def make_prompt(name, audio_prompt_path, transcript=None):
     # message = f"Detected language: {lang_pr}\n Detected text {text_pr}\n"
 
     # save as npz file
-    save_path = os.path.join("./talk_module/VALLEX/customs/", f"{name}.npz")
+    save_path = os.path.join("./talk_module/VALLEX_C/customs/", f"{name}.npz")
     np.savez(save_path, audio_tokens=audio_tokens, text_tokens=text_tokens, lang_code=lang2code[lang_pr])
     logging.info(f"Successful. Prompt saved to {save_path}")
 
@@ -101,11 +101,11 @@ def make_transcript(name, wav, sr, transcript=None):
         if whisper_model is None:
             whisper_model = whisper.load_model("medium", download_root=os.path.join(os.getcwd(), "whisper"))
         whisper_model.to(device)
-        torchaudio.save(f"./talk_module/VALLEX/prompts/{name}.wav", wav, sr)
-        lang, text = transcribe_one(whisper_model, f"./talk_module/VALLEX/prompts/{name}.wav")
+        torchaudio.save(f"./talk_module/VALLEX_C/prompts/{name}.wav", wav, sr)
+        lang, text = transcribe_one(whisper_model, f"./talk_module/VALLEX_C/prompts/{name}.wav")
         lang_token = lang2token[lang]
         text = lang_token + text + lang_token
-        os.remove(f"./talk_module/VALLEX/prompts/{name}.wav")
+        os.remove(f"./talk_module/VALLEX_C/prompts/{name}.wav")
         whisper_model.cpu()
     else:
         text = transcript

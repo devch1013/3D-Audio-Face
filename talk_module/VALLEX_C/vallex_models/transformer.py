@@ -21,10 +21,10 @@ import torch.nn.functional as F
 # from icefall.utils import make_pad_mask
 # from torchmetrics.classification import BinaryAccuracy
 
-from talk_module.VALLEX.vallex_models.vallex import Transpose
-from talk_module.VALLEX.vallex_modules.embedding import SinePositionalEmbedding, TokenEmbedding
-from talk_module.VALLEX.vallex_modules.scaling import BalancedDoubleSwish, ScaledLinear
-from talk_module.VALLEX.vallex_modules.transformer import (
+from talk_module.VALLEX_C.vallex_models.vallex import Transpose
+from talk_module.VALLEX_C.vallex_modules.embedding import SinePositionalEmbedding, TokenEmbedding
+from talk_module.VALLEX_C.vallex_modules.scaling import BalancedDoubleSwish, ScaledLinear
+from talk_module.VALLEX_C.vallex_modules.transformer import (
     BalancedBasicNorm,
     IdentityNorm,
     TransformerDecoderLayer,

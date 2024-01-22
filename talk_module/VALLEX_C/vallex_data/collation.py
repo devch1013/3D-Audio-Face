@@ -4,7 +4,7 @@ from typing import List, Tuple
 import numpy as np
 import torch
 
-from talk_module.VALLEX.vallex_utils import SymbolTable
+from talk_module.VALLEX_C.vallex_utils import SymbolTable
 
 
 class TextTokenCollater:

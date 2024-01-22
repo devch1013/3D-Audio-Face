@@ -1,7 +1,7 @@
 import re
-from talk_module.VALLEX.vallex_utils.g2p.japanese import japanese_to_romaji_with_accent, japanese_to_ipa, japanese_to_ipa2, japanese_to_ipa3
-from talk_module.VALLEX.vallex_utils.g2p.mandarin import number_to_chinese, chinese_to_bopomofo, latin_to_bopomofo, chinese_to_romaji, chinese_to_lazy_ipa, chinese_to_ipa, chinese_to_ipa2
-from talk_module.VALLEX.vallex_utils.g2p.english import english_to_lazy_ipa, english_to_ipa2, english_to_lazy_ipa2
+from talk_module.VALLEX_C.vallex_utils.g2p.japanese import japanese_to_romaji_with_accent, japanese_to_ipa, japanese_to_ipa2, japanese_to_ipa3
+from talk_module.VALLEX_C.vallex_utils.g2p.mandarin import number_to_chinese, chinese_to_bopomofo, latin_to_bopomofo, chinese_to_romaji, chinese_to_lazy_ipa, chinese_to_ipa, chinese_to_ipa2
+from talk_module.VALLEX_C.vallex_utils.g2p.english import english_to_lazy_ipa, english_to_ipa2, english_to_lazy_ipa2
 patterns = [r'\[EN\](.*?)\[EN\]', r'\[ZH\](.*?)\[ZH\]', r'\[JA\](.*?)\[JA\]']
 def japanese_cleaners(text):
     text = japanese_to_romaji_with_accent(text)

@@ -18,7 +18,7 @@
 
 import torch
 
-from talk_module.VALLEX.vallex_modules.optim import Eden
+from talk_module.VALLEX_C.vallex_modules.optim import Eden
 
 
 def calc_lr(step, dim_embed, warmup_steps):

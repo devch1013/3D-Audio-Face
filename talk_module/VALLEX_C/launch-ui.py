@@ -25,7 +25,7 @@ import langid
 langid.set_languages(['en', 'zh', 'ja'])
 
 import nltk
-nltk.data.path = nltk.data.path + [os.path.join(os.getcwd(), "talk_module/VALLEX/nltk_data")]
+nltk.data.path = nltk.data.path + [os.path.join(os.getcwd(), "talk_module/VALLEX_C/nltk_data")]
 
 import torch
 import torchaudio
@@ -33,16 +33,16 @@ import random
 
 import numpy as np
 
-from talk_module.VALLEX.vallex_data.tokenizer import (
+from talk_module.VALLEX_C.vallex_data.tokenizer import (
     AudioTokenizer,
     tokenize_audio,
 )
-from talk_module.VALLEX.vallex_data.collation import get_text_token_collater
-from talk_module.VALLEX.models.vallex import VALLE
-from talk_module.VALLEX.vallex_utils.g2p import PhonemeBpeTokenizer
-from talk_module.VALLEX.descriptions import *
-from talk_module.VALLEX.macros import *
-from talk_module.VALLEX.examples import *
+from talk_module.VALLEX_C.vallex_data.collation import get_text_token_collater
+from talk_module.VALLEX_C.models.vallex import VALLE
+from talk_module.VALLEX_C.vallex_utils.g2p import PhonemeBpeTokenizer
+from talk_module.VALLEX_C.descriptions import *
+from talk_module.VALLEX_C.macros import *
+from talk_module.VALLEX_C.examples import *
 
 import gradio as gr
 import whisper
@@ -59,7 +59,7 @@ torch._C._jit_set_profiling_executor(False)
 torch._C._jit_set_profiling_mode(False)
 torch._C._set_graph_executor_optimize(False)
 
-text_tokenizer = PhonemeBpeTokenizer(tokenizer_path="./talk_module/VALLEX/vallex_utils/g2p/bpe_69.json")
+text_tokenizer = PhonemeBpeTokenizer(tokenizer_path="./talk_module/VALLEX_C/vallex_utils/g2p/bpe_69.json")
 text_collater = get_text_token_collater()
 
 device = torch.device("cpu")
@@ -119,7 +119,7 @@ except Exception as e:
         "\n manually download model and put it to {} .".format(os.getcwd() + "\whisper"))
 
 # Voice Presets
-preset_list = os.walk("./talk_module/VALLEX/presets/").__next__()[2]
+preset_list = os.walk("./talk_module/VALLEX_C/presets/").__next__()[2]
 preset_list = [preset[:-4] for preset in preset_list if preset.endswith(".npz")]
 
 def clear_prompts():
@@ -212,15 +212,15 @@ def make_prompt(name, wav, sr, save=True):
     if wav.ndim == 1:
         wav = wav.unsqueeze(0)
     assert wav.ndim and wav.size(0) == 1
-    torchaudio.save(f"./talk_module/VALLEX/prompts/{name}.wav", wav, sr)
-    lang, text = transcribe_one(whisper_model, f"./talk_module/VALLEX/prompts/{name}.wav")
+    torchaudio.save(f"./talk_module/VALLEX_C/prompts/{name}.wav", wav, sr)
+    lang, text = transcribe_one(whisper_model, f"./talk_module/VALLEX_C/prompts/{name}.wav")
     lang_token = lang2token[lang]
     text = lang_token + text + lang_token
-    with open(f"./talk_module/VALLEX/prompts/{name}.txt", 'w', encoding='utf-8') as f:
+    with open(f"./talk_module/VALLEX_C/prompts/{name}.txt", 'w', encoding='utf-8') as f:
         f.write(text)
     if not save:
-        os.remove(f"./talk_module/VALLEX/prompts/{name}.wav")
-        os.remove(f"./talk_module/VALLEX/prompts/{name}.txt")
+        os.remove(f"./talk_module/VALLEX_C/prompts/{name}.wav")
+        os.remove(f"./talk_module/VALLEX_C/prompts/{name}.txt")
 
     whisper_model.cpu()
     torch.cuda.empty_cache()
@@ -321,7 +321,7 @@ def infer_from_prompt(text, language, accent, preset_prompt, prompt_file):
     if prompt_file is not None:
         prompt_data = np.load(prompt_file.name)
     else:
-        prompt_data = np.load(os.path.join("./talk_module/VALLEX/presets/", f"{preset_prompt}.npz"))
+        prompt_data = np.load(os.path.join("./talk_module/VALLEX_C/presets/", f"{preset_prompt}.npz"))
     audio_prompts = prompt_data['audio_tokens']
     text_prompts = prompt_data['text_tokens']
     lang_pr = prompt_data['lang_code']
@@ -366,7 +366,7 @@ def infer_from_prompt(text, language, accent, preset_prompt, prompt_file):
     return message, (24000, samples.squeeze(0).cpu().numpy())
 
 
-from talk_module.VALLEX.vallex_utils.sentence_cutter import split_text_into_sentences
+from talk_module.VALLEX_C.vallex_utils.sentence_cutter import split_text_into_sentences
 @torch.no_grad()
 def infer_long_text(text, preset_prompt, prompt=None, language='auto', accent='no-accent'):
     """
@@ -399,7 +399,7 @@ def infer_long_text(text, preset_prompt, prompt=None, language='auto', accent='n
         audio_prompts = torch.tensor(audio_prompts).type(torch.int32).to(device)
         text_prompts = torch.tensor(text_prompts).type(torch.int32)
     elif preset_prompt is not None and preset_prompt != "":
-        prompt_data = np.load(os.path.join("./talk_module/VALLEX/presets/", f"{preset_prompt}.npz"))
+        prompt_data = np.load(os.path.join("./talk_module/VALLEX_C/presets/", f"{preset_prompt}.npz"))
         audio_prompts = prompt_data['audio_tokens']
         text_prompts = prompt_data['text_tokens']
         lang_pr = prompt_data['lang_code']

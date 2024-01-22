@@ -21,9 +21,10 @@ from utils.deterministic import deterministic
 from modules.img2mesh import Image2Mesh
 from modules.mesh2blendshape import Mesh2Blendshape
 from modules.mesh2talk import Mesh2Talk
+
+from talk_module.VALLEX_C.TTS import init_emotion
 from modules.voice2voice import Voice2Voice 
 
-from talk_module.VALLEX.TTS import init_emotion
 
 class TalkWithMe:
     def __init__(self, conversation_only=False):

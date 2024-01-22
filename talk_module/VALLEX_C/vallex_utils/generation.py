@@ -16,16 +16,16 @@ else:
     pathlib.WindowsPath = pathlib.PosixPath
 
 import numpy as np
-from talk_module.VALLEX.vallex_data.tokenizer import (
+from talk_module.VALLEX_C.vallex_data.tokenizer import (
     AudioTokenizer,
     tokenize_audio,
 )
-from talk_module.VALLEX.vallex_data.collation import get_text_token_collater
-from talk_module.VALLEX.vallex_models.vallex import VALLE
-from talk_module.VALLEX.vallex_utils.g2p import PhonemeBpeTokenizer
-from talk_module.VALLEX.vallex_utils.sentence_cutter import split_text_into_sentences
+from talk_module.VALLEX_C.vallex_data.collation import get_text_token_collater
+from talk_module.VALLEX_C.vallex_models.vallex import VALLE
+from talk_module.VALLEX_C.vallex_utils.g2p import PhonemeBpeTokenizer
+from talk_module.VALLEX_C.vallex_utils.sentence_cutter import split_text_into_sentences
 
-from talk_module.VALLEX.macros import *
+from talk_module.VALLEX_C.macros import *
 
 device = torch.device("cpu")
 if torch.cuda.is_available():
@@ -44,7 +44,7 @@ codec = None
 
 vocos = None
 
-text_tokenizer = PhonemeBpeTokenizer(tokenizer_path="./talk_module/VALLEX/vallex_utils/g2p/bpe_69.json")
+text_tokenizer = PhonemeBpeTokenizer(tokenizer_path="./talk_module/VALLEX_C/vallex_utils/g2p/bpe_69.json")
 text_collater = get_text_token_collater()
 
 def preload_models():
@@ -103,9 +103,9 @@ def generate_audio(text, prompt=None, language='auto', accent='no-accent'):
     if prompt is not None:
         prompt_path = prompt
         if not os.path.exists(prompt_path):
-            prompt_path = "./talk_module/VALLEX/presets/" + prompt + ".npz"
+            prompt_path = "./talk_module/VALLEX_C/presets/" + prompt + ".npz"
         if not os.path.exists(prompt_path):
-            prompt_path = "./talk_module/VALLEX/customs/" + prompt + ".npz"
+            prompt_path = "./talk_module/VALLEX_C/customs/" + prompt + ".npz"
         if not os.path.exists(prompt_path):
             raise ValueError(f"Cannot find prompt {prompt}")
         prompt_data = np.load(prompt_path)
@@ -170,9 +170,9 @@ def generate_audio_from_long_text(text, prompt=None, language='auto', accent='no
     if prompt is not None and prompt != "":
         prompt_path = prompt
         if not os.path.exists(prompt_path):
-            prompt_path = "./talk_module/VALLEX/presets/" + prompt + ".npz"
+            prompt_path = "./talk_module/VALLEX_C/presets/" + prompt + ".npz"
         if not os.path.exists(prompt_path):
-            prompt_path = "./talk_module/VALLEX/customs/" + prompt + ".npz"
+            prompt_path = "./talk_module/VALLEX_C/customs/" + prompt + ".npz"
         if not os.path.exists(prompt_path):
             raise ValueError(f"Cannot find prompt {prompt}")
         prompt_data = np.load(prompt_path)

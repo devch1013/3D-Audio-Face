@@ -1,6 +1,6 @@
 """ from https://github.com/keithito/tacotron """
-import talk_module.VALLEX.vallex_utils.g2p.cleaners
-from talk_module.VALLEX.vallex_utils.g2p.symbols import symbols
+import talk_module.VALLEX_C.vallex_utils.g2p.cleaners
+from talk_module.VALLEX_C.vallex_utils.g2p.symbols import symbols
 from tokenizers import Tokenizer
 
 # Mappings from symbol to numeric ID and vice versa:
@@ -9,7 +9,7 @@ _id_to_symbol = {i: s for i, s in enumerate(symbols)}
 
 
 class PhonemeBpeTokenizer:
-  def __init__(self, tokenizer_path = "./talk_module/VALLEX/vallex_utils/g2p/bpe_1024.json"):
+  def __init__(self, tokenizer_path = "./talk_module/VALLEX_C/vallex_utils/g2p/bpe_1024.json"):
     self.tokenizer = Tokenizer.from_file(tokenizer_path)
 
   def tokenize(self, text):
@@ -65,7 +65,7 @@ def sequence_to_text(sequence):
 
 def _clean_text(text, cleaner_names):
   for name in cleaner_names:
-    cleaner = getattr(talk_module.VALLEX.vallex_utils.g2p.cleaners, name)
+    cleaner = getattr(talk_module.VALLEX_C.vallex_utils.g2p.cleaners, name)
     if not cleaner:
       raise Exception('Unknown cleaner: %s' % name)
     text, langs = cleaner(text)
