@@ -6,6 +6,7 @@ from langchain.chains import ConversationChain
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts.prompt import PromptTemplate
 
+
 ai_secret_file = "talk_module/LLM/keys.ini"
 config = configparser.ConfigParser()
 config.read(ai_secret_file)
