@@ -4,7 +4,7 @@ from loguru import logger
 
 from talk_module.LLM.chat import ChatGPTConversation
 from talk_module.vits.TTS import TextToSpeech, load_TTS
-
+from talk_module.VALLEX.TTS import TextToSpeech as TextToSpeechVALLEX, init_emotion
 
 class Voice2Voice:
     def __init__(self, args):
@@ -44,14 +44,25 @@ class Voice2Voice:
                 Start off by giving a very short hello message to the user!"
             )
 
+    # def __call__(self, input_audio_path: str):
+    #     result = self.stt_model.transcribe(input_audio_path)  # m4a, wav 등등 다 가능
+    #     answer = self.conversation_agent(result["text"])
+    #     print("answer: ", answer)
+    #     # answer = "To re-log into GitHub and push commits in a remote server, you will need to first log into your GitHub account. Then, you will need to navigate to the repository you want to push commits to."
+    #     audio, rate = TextToSpeech(self.tts_model, answer, self.hps)
+
+    #     return (
+    #         librosa.resample(audio, orig_sr=rate[0], target_sr=self.hps.data.sampling_rate),
+    #         self.hps.data.sampling_rate,
+    #     )
+
     def __call__(self, input_audio_path: str):
         result = self.stt_model.transcribe(input_audio_path)  # m4a, wav 등등 다 가능
         answer = self.conversation_agent(result["text"])
         print("answer: ", answer)
         # answer = "To re-log into GitHub and push commits in a remote server, you will need to first log into your GitHub account. Then, you will need to navigate to the repository you want to push commits to."
-        audio, rate = TextToSpeech(self.tts_model, answer, self.hps)
+        
+        init_emotion()
+        audio, rate = TextToSpeechVALLEX('happy', answer)
 
-        return (
-            librosa.resample(audio, orig_sr=rate[0], target_sr=self.hps.data.sampling_rate),
-            self.hps.data.sampling_rate,
-        )
+        return audio, rate

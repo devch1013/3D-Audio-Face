@@ -27,3 +27,8 @@ keys.ini 파일 형태
 OPENAI_API_KEY=key
 
 TODO : 236, 1824번째줄 어떻게 좀 수정하면 빨라질거같은데 둘다 병렬연산될거같아서
+
+VALLEX 넣으면서 추가된내용 > sh 파일들에 아직 미반영
+1. VALLEX의 TTS.py에 init 보면 절대경로로 된거 하나있고
+2. talk_module/VALLEX/utils/g2p/__init__.py 에도 하나있음
+3. 나머지 weight 같은거는 처음에 실행하면 알아서 받아짐

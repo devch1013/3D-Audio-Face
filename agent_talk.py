@@ -1,6 +1,7 @@
 import time
 import os
 from pathlib import Path
+import sys
 
 from loguru import logger
 import yaml
@@ -141,6 +142,7 @@ class TalkWithMe:
             print(f"\033[1;3;31mRunning Mesh2Talk Took... \n\t{time.time() - cp}s\033[0m")
             print(self.args["tts_param"]["output_path"],":",filename)
             save_wav(result_audio, sampling_rate, filename, self.args["tts_param"]["output_path"])
+            save_wav(result_audio, sampling_rate, filename, "./test_output")
 
             logger.info("Finish Process")
             print(f"\033[1;3;31mRunning Process Took... \n\t{time.time() - start}s\033[0m")
@@ -148,6 +150,8 @@ class TalkWithMe:
         
         
 if __name__ == "__main__":
+    # sys.path.append('.')
+    # sys.path.append('./talk_module/VALLEX')
     main_model = TalkWithMe(conversation_only=True)
     image_path = "data/input_images/haerin.jpg"
     input_audio_path = "data/audio_input/myquestion2.m4a"
