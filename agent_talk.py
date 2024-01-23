@@ -152,7 +152,6 @@ class TalkWithMe:
             print(f"\033[1;3;31mRunning Process Took... \n\t{time.time() - start}s\033[0m")
         
         
-        
 if __name__ == "__main__":
     sys.path.append('/home/elicer/talk2yourself/talk_module')
     main_model = TalkWithMe(conversation_only=True)
