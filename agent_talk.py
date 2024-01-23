@@ -1,6 +1,7 @@
 import time
 import os
 from pathlib import Path
+import sys
 
 from loguru import logger
 import yaml
@@ -20,8 +21,9 @@ from utils.deterministic import deterministic
 from modules.img2mesh import Image2Mesh
 from modules.mesh2blendshape import Mesh2Blendshape
 from modules.mesh2talk import Mesh2Talk
-from modules.voice2voice import Voice2Voice 
 
+from talk_module.VALLEX_C.TTS import init_emotion
+from modules.voice2voice import Voice2Voice 
 
 
 class TalkWithMe:
@@ -58,6 +60,8 @@ class TalkWithMe:
         logger.info("Load Voice2Voice Model")
         cp = time.time()
         self.voice2voice = Voice2Voice(self.args)
+        logger.info("Initializing Emotions")
+        init_emotion()
         print(f"\033[1;3;31mLoading Voice2Voice Took... \n\t{time.time() - cp}s\033[0m")
         logger.info("Model Load Finished")
         print(f"\033[1;3;31mLoading Models Took... \n\t{time.time() - start}s\033[0m")
@@ -141,6 +145,7 @@ class TalkWithMe:
             print(f"\033[1;3;31mRunning Mesh2Talk Took... \n\t{time.time() - cp}s\033[0m")
             print(self.args["tts_param"]["output_path"],":",filename)
             save_wav(result_audio, sampling_rate, filename, self.args["tts_param"]["output_path"])
+            save_wav(result_audio, sampling_rate, filename, "./test_output")
 
             logger.info("Finish Process")
             print(f"\033[1;3;31mRunning Process Took... \n\t{time.time() - start}s\033[0m")
@@ -148,6 +153,7 @@ class TalkWithMe:
         
         
 if __name__ == "__main__":
+    sys.path.append('/home/elicer/talk2yourself/talk_module')
     main_model = TalkWithMe(conversation_only=True)
     image_path = "data/input_images/haerin.jpg"
     input_audio_path = "data/audio_input/myquestion2.m4a"
