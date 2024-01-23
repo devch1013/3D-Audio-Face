@@ -176,7 +176,7 @@ if __name__ == "__main__":
     emotion3 = "厌恶"
     emotion4 = "开心"
     TTS = TextToSpeech()
-    speaker_id = "1096"
+    speaker_id = "9000"
     #input params : input text, (emotional)prompt, speaker id in str, checkpoint name
     TTS(content, emotion1, speaker_id)
     TTS(content, emotion2, speaker_id)
