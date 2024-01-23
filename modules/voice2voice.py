@@ -1,10 +1,16 @@
 import whisper
 import librosa
 from loguru import logger
+import numpy as np
 
 from talk_module.LLM.chat import ChatGPTConversation
 from talk_module.vits.TTS import TextToSpeech, load_TTS
 from talk_module.VALLEX_C.TTS import TextToSpeech as TextToSpeechVALLEX, init_emotion
+from talk_module.VALLEX_C.vallex_utils.generation import SAMPLE_RATE
+from nltk.tokenize import sent_tokenize
+import re
+
+from utils.savetowav import save_wav
 
 # from talk_module.VALLEX_C.TTS import TextToSpeech as TextToSpeechVALLEX, init_emotion
 
@@ -64,9 +70,15 @@ class Voice2Voice:
         print("answer: ", answer)
         # answer = "To re-log into GitHub and push commits in a remote server, you will need to first log into your GitHub account. Then, you will need to navigate to the repository you want to push commits to."
         
-        # init_emotion()
-        audio, rate = TextToSpeechVALLEX('surprised', answer)
-        # 여기서 GPT가 감정을 내뱉게 해서 하면될듯
-        # audio, rate = TextToSpeechVALLEX('fearful', "Can I speak short sentences?")
+        # 근데 문장끼리의 목소리가 비슷해야하는데 이걸 어떻게 해야하지
+        result_audio = np.array([])
+        for sent in sent_tokenize(answer):
+            # audios.append(TextToSpeechVALLEX('surprised', sent))
+            result_audio = np.concatenate((result_audio, TextToSpeechVALLEX('surprised', re.sub(r'["\[\]\(\)]', '', sent))), axis=0)
+            save_wav(TextToSpeechVALLEX('angry', sent), SAMPLE_RATE, re.sub(r'["\[\]]', '', sent), "./splitted") 
 
-        return audio, rate
+        # result_audio = TextToSpeechVALLEX('sad', answer)
+        # 여기서 GPT가 감정을 내뱉게 해서 하면될듯
+        # audio, rate = TextToSpeechVALLEX('fearful', "Can I speak um... short sentences?")
+
+        return result_audio, SAMPLE_RATE
