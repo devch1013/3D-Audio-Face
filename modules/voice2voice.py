@@ -73,7 +73,9 @@ class Voice2Voice:
         # answer = "To re-log into GitHub and push commits in a remote server, you will need to first log into your GitHub account. Then, you will need to navigate to the repository you want to push commits to."
         
         # init_emotion()
-        audio, rate = self.tts_model(answer, prompt='生气', speaker='1096')
+        audio, rate = self.tts_model(answer, prompt='开心', speaker='1096') #普通, 生气, 开心, 惊讶, 悲伤, 厌恶, 恐惧 -> 보통, 화, 즐거움, 놀라움, 슬픔, 혐오, 두려움
+        ###### 프롬프트 안주면 알아서 answer가 프롬프트로 들어가는데 이렇게 해도 감정 반영된다고 써있긴함
+        ###### 영어 프롬프트도 되긴하는데, 중국어가 더 잘되는거 같아서 일단 중국어로 냅둠.
         # audio, rate = TextToSpeechVALLEX('surprised', answer)
         # 여기서 GPT가 감정을 내뱉게 해서 하면될듯
         # audio, rate = TextToSpeechVALLEX('fearful', "Can I speak short sentences?")
