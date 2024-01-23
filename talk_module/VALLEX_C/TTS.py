@@ -1,5 +1,5 @@
 from talk_module.VALLEX_C.vallex_utils.prompt_making import make_prompt
-from talk_module.VALLEX_C.vallex_utils.generation import SAMPLE_RATE, generate_audio, preload_models
+from talk_module.VALLEX_C.vallex_utils.generation import generate_audio, preload_models
 from scipy.io.wavfile import write as write_wav
 
 def init_emotion():
@@ -12,4 +12,4 @@ def init_emotion():
 
 def TextToSpeech(emotion, input_text):
     audio_array = generate_audio(input_text, prompt=emotion)
-    return audio_array, SAMPLE_RATE
+    return audio_array
