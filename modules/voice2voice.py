@@ -55,3 +55,9 @@ class Voice2Voice:
             librosa.resample(audio, orig_sr=rate[0], target_sr=self.hps.data.sampling_rate),
             self.hps.data.sampling_rate,
         )
+
+    def change_emotion(self, emotion):
+        self.conversation_agent.change_emotion(emotion)
+        
+    def reset_history(self):
+        self.conversation_agent.reset_history()
