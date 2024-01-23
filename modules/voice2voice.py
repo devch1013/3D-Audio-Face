@@ -70,15 +70,20 @@ class Voice2Voice:
         print("answer: ", answer)
         # answer = "To re-log into GitHub and push commits in a remote server, you will need to first log into your GitHub account. Then, you will need to navigate to the repository you want to push commits to."
         
-        # 근데 문장끼리의 목소리가 비슷해야하는데 이걸 어떻게 해야하지
-        result_audio = np.array([])
-        for sent in sent_tokenize(answer):
-            # audios.append(TextToSpeechVALLEX('surprised', sent))
-            result_audio = np.concatenate((result_audio, TextToSpeechVALLEX('surprised', re.sub(r'["\[\]\(\)]', '', sent))), axis=0)
-            save_wav(TextToSpeechVALLEX('angry', sent), SAMPLE_RATE, re.sub(r'["\[\]]', '', sent), "./splitted") 
-
-        # result_audio = TextToSpeechVALLEX('sad', answer)
+        # init_emotion()
+        audio, rate = TextToSpeechVALLEX('surprised', answer)
         # 여기서 GPT가 감정을 내뱉게 해서 하면될듯
-        # audio, rate = TextToSpeechVALLEX('fearful', "Can I speak um... short sentences?")
+        # audio, rate = TextToSpeechVALLEX('fearful', "Can I speak short sentences?")
 
-        return result_audio, SAMPLE_RATE
+        return audio, rate
+
+        return (
+            librosa.resample(audio, orig_sr=rate[0], target_sr=self.hps.data.sampling_rate),
+            self.hps.data.sampling_rate,
+        )
+
+    def change_emotion(self, emotion):
+        self.conversation_agent.change_emotion(emotion)
+        
+    def reset_history(self):
+        self.conversation_agent.reset_history()
