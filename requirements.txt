@@ -25,3 +25,14 @@ open3d
 fastapi
 uvicorn
 python-multipart
+# valle
+langid
+encodec
+jieba
+cn2an
+inflect
+vocos
+nltk
+sudachipy
+eng_to_ipa
+wget

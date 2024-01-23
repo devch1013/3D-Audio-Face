@@ -3,7 +3,7 @@ import os
 
 # from langchain.llms import OpenAI
 from langchain_openai import ChatOpenAI
-from langchain.chains import ConversationChain
+from langchain.chains import ConversationChain, LLMChain
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts.prompt import PromptTemplate
 
@@ -25,7 +25,7 @@ class ChatGPTConversation:
             input_variables=["emotion", "input", "history"], template=template
         )
         self.emotion = "neutral"
-        self.conversation = ConversationChain(
+        self.conversation = LLMChain(
             prompt=prompt_template,
             llm=llm,
             verbose=True,
