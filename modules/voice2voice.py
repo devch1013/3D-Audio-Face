@@ -73,7 +73,7 @@ class Voice2Voice:
         # answer = "To re-log into GitHub and push commits in a remote server, you will need to first log into your GitHub account. Then, you will need to navigate to the repository you want to push commits to."
         
         # init_emotion()
-        audio, rate = TextToSpeechEmoti(answer, '生气', '1096')
+        audio, rate = self.tts_model(answer, prompt='生气', speaker='1096')
         # audio, rate = TextToSpeechVALLEX('surprised', answer)
         # 여기서 GPT가 감정을 내뱉게 해서 하면될듯
         # audio, rate = TextToSpeechVALLEX('fearful', "Can I speak short sentences?")

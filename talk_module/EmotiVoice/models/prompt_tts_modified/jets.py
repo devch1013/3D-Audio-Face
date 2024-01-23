@@ -17,10 +17,10 @@ import torch.nn as nn
 import numpy as np
 from typing import Optional
 
-from models.prompt_tts_modified.model_open_source import PromptTTS
-from models.hifigan.models import Generator as HiFiGANGenerator
+from talk_module.EmotiVoice.models.prompt_tts_modified.model_open_source import PromptTTS
+from talk_module.EmotiVoice.models.hifigan.models import Generator as HiFiGANGenerator
 
-from models.hifigan.get_random_segments import get_random_segments, get_segments
+from talk_module.EmotiVoice.models.hifigan.get_random_segments import get_random_segments, get_segments
 
 
 class JETSGenerator(nn.Module):

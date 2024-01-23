@@ -13,8 +13,8 @@
 # limitations under the License.
 
 import os, json, torch
-from models.hifigan.env import AttrDict
-from models.hifigan.models import Generator
+from talk_module.EmotiVoice.models.hifigan.env import AttrDict
+from talk_module.EmotiVoice.models.hifigan.models import Generator
 
 MAX_WAV_VALUE = 32768.0
 

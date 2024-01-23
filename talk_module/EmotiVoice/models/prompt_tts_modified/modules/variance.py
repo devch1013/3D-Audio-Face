@@ -4,7 +4,7 @@ This code is modified from https://github.com/espnet/espnet.
 
 import torch 
 
-from models.prompt_tts_modified.modules.encoder import LayerNorm
+from talk_module.EmotiVoice.models.prompt_tts_modified.modules.encoder import LayerNorm
 
 class DurationPredictor(torch.nn.Module):
 

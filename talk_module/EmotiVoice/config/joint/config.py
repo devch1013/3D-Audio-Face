@@ -31,7 +31,7 @@ def get_labels_length(file_path):
 
 class Config:
     #### PATH ####
-    ROOT_DIR            = os.path.dirname(os.path.abspath("__file__"))
+    ROOT_DIR            = os.path.dirname(os.path.abspath("__file__")) + "/talk_module/EmotiVoice"
     DATA_DIR            = ROOT_DIR + "/data/youdao/"
     train_data_path     = DATA_DIR + "train_am/datalist.jsonl"
     valid_data_path     = DATA_DIR + "valid_am/datalist.jsonl"

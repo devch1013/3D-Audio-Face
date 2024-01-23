@@ -1,22 +1,22 @@
 import re
-from frontend_cn import g2p_cn, re_digits, tn_chinese
-from frontend_en import ROOT_DIR, read_lexicon, G2p, get_eng_phoneme
+from talk_module.EmotiVoice.frontend_cn import g2p_cn, re_digits, tn_chinese
+from talk_module.EmotiVoice.frontend_en import ROOT_DIR, read_lexicon, G2p, get_eng_phoneme
 import sys
 from os.path import isfile
 
-from models.prompt_tts_modified.jets import JETSGenerator
-from models.prompt_tts_modified.simbert import StyleEncoder
+from talk_module.EmotiVoice.models.prompt_tts_modified.jets import JETSGenerator
+from talk_module.EmotiVoice.models.prompt_tts_modified.simbert import StyleEncoder
 from transformers import AutoTokenizer
 import os, sys, warnings, torch, glob, argparse
 import numpy as np
-from models.hifigan.get_vocoder import MAX_WAV_VALUE
+from talk_module.EmotiVoice.models.hifigan.get_vocoder import MAX_WAV_VALUE
 import soundfile as sf
 from yacs import config as CONFIG
 from tqdm import tqdm
 
 class TextToSpeech:
     def __init__(self):
-        sys.path.append(os.path.dirname(os.path.abspath("__file__")) + "/" + "config/joint")
+        sys.path.append(os.path.dirname(os.path.abspath("__file__")) + "/" + "talk_module/EmotiVoice/config/joint")
         from config import Config
         self.config = Config
         self.re_english_word = re.compile('([^\u4e00-\u9fa5]+|[ \u3002\uff0c\uff1f\uff01\uff1b\uff1a\u201c\u201d\u2018\u2019\u300a\u300b\u3008\u3009\u3010\u3011\u300e\u300f\u2014\u2026\u3001\uff08\uff09\u4e00-\u9fa5]+)', re.I)
@@ -165,7 +165,8 @@ class TextToSpeech:
                 # sf.write(file=root_path + "/test_audio/audio/" +f"{file}/{prompt}.wav", data=audio, samplerate=self.config.sampling_rate) #h.sampling_rate
     
     def __call__(self, content, prompt=None, speaker="8051", checkpoint="g_00140000"):
-        self.convert(self.phonemize(content), content, prompt, speaker, checkpoint)
+        audio, rate = self.convert(self.phonemize(content), content, prompt, speaker, checkpoint)
+        return audio, rate
 
 
 if __name__ == "__main__":

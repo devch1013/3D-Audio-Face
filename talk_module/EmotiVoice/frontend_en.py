@@ -22,7 +22,7 @@ from g2p_en import G2p
 import os
 
 
-ROOT_DIR = os.path.dirname(os.path.abspath("__file__"))
+ROOT_DIR = os.path.dirname(os.path.abspath("__file__")) + "/talk_module/EmotiVoice"
 
 def read_lexicon(lex_path):
     lexicon = {}
