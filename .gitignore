@@ -13,7 +13,9 @@ __pycache__/
 **.ini
 **.jpg
 **.m4a
-**.txt
+corr**.txt
+landmarks**.txt
+**/landmarks/**.txt
 **.png
 **.gif
 **.whl
