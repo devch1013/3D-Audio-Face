@@ -8,7 +8,8 @@ from talk_module.vits.TTS import TextToSpeech, load_TTS
 from talk_module.VALLEX_C.TTS import TextToSpeech as TextToSpeechVALLEX, init_emotion
 from talk_module.VALLEX_C.vallex_utils.generation import SAMPLE_RATE
 from nltk.tokenize import sent_tokenize
-import re
+
+from talk_module.EmotiVoice.EmoTTS import TextToSpeech as TextToSpeechEmoti
 
 from utils.savetowav import save_wav
 
@@ -24,11 +25,12 @@ class Voice2Voice:
         logger.info("ㄴ Loading LLM model...")
         self.conversation_agent = ChatGPTConversation()
         logger.info("ㄴ Loading TTS Model...")
-        self.tts_model, self.hps = load_TTS(
-            config_dir=args["tts_param"]["config_dir"],
-            ckpt_dir=args["tts_param"]["tts_ckpt"],
-            device=self.device,
-        )
+        # self.tts_model, self.hps = load_TTS(
+        #     config_dir=args["tts_param"]["config_dir"],
+        #     ckpt_dir=args["tts_param"]["tts_ckpt"],
+        #     device=self.device,
+        # )
+        self.tts_model = TextToSpeechEmoti()
     def first(self):
         say_hi = self.conversation_agent(
                 "As a Chatbot called FriendGPT, your goal is to sound like someone similar aged to the user.\
@@ -71,16 +73,17 @@ class Voice2Voice:
         # answer = "To re-log into GitHub and push commits in a remote server, you will need to first log into your GitHub account. Then, you will need to navigate to the repository you want to push commits to."
         
         # init_emotion()
-        audio, rate = TextToSpeechVALLEX('surprised', answer)
+        audio, rate = TextToSpeechEmoti(answer, '生气', '1096')
+        # audio, rate = TextToSpeechVALLEX('surprised', answer)
         # 여기서 GPT가 감정을 내뱉게 해서 하면될듯
         # audio, rate = TextToSpeechVALLEX('fearful', "Can I speak short sentences?")
 
         return audio, rate
 
-        return (
-            librosa.resample(audio, orig_sr=rate[0], target_sr=self.hps.data.sampling_rate),
-            self.hps.data.sampling_rate,
-        )
+        # return (
+        #     librosa.resample(audio, orig_sr=rate[0], target_sr=self.hps.data.sampling_rate),
+        #     self.hps.data.sampling_rate,
+        # )
 
     def change_emotion(self, emotion):
         self.conversation_agent.change_emotion(emotion)

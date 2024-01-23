@@ -158,9 +158,11 @@ class TextToSpeech:
                     )
                 audio = infer_output["wav_predictions"].squeeze()* MAX_WAV_VALUE
                 audio = audio.cpu().numpy().astype('int16')
-                if not os.path.exists(root_path + "/test_audio/audio/" +f"{file}/"):
-                    os.makedirs(root_path + "/test_audio/audio/" +f"{file}/", exist_ok=True)
-                sf.write(file=root_path + "/test_audio/audio/" +f"{file}/{prompt}.wav", data=audio, samplerate=self.config.sampling_rate) #h.sampling_rate
+
+                return audio, self.config.sampling_rate
+                # if not os.path.exists(root_path + "/test_audio/audio/" +f"{file}/"):
+                #     os.makedirs(root_path + "/test_audio/audio/" +f"{file}/", exist_ok=True)
+                # sf.write(file=root_path + "/test_audio/audio/" +f"{file}/{prompt}.wav", data=audio, samplerate=self.config.sampling_rate) #h.sampling_rate
     
     def __call__(self, content, prompt=None, speaker="8051", checkpoint="g_00140000"):
         self.convert(self.phonemize(content), content, prompt, speaker, checkpoint)

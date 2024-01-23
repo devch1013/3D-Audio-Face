@@ -61,7 +61,7 @@ class TalkWithMe:
         cp = time.time()
         self.voice2voice = Voice2Voice(self.args)
         logger.info("Initializing Emotions")
-        init_emotion()
+        # init_emotion()
         print(f"\033[1;3;31mLoading Voice2Voice Took... \n\t{time.time() - cp}s\033[0m")
         logger.info("Model Load Finished")
         print(f"\033[1;3;31mLoading Models Took... \n\t{time.time() - start}s\033[0m")

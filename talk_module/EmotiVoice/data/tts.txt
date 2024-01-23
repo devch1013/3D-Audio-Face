@@ -1,0 +1,1 @@
+8051|Angry|<sos/eos> [HH] [AH0] [L] [OW1] engsp1 [M] [AY1] engsp1 [N] [EY1] [M] engsp1 [IH0] [Z] engsp1 [JH] [AH1] [N] [W] [AH0] [N] <sos/eos>|Hello my name is junwan
