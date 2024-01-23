@@ -97,6 +97,7 @@ class TalkWithMe:
         start = time.time()
         cp = time.time()
         result_audio, sampling_rate = self.voice2voice(audio_path)
+
         print(f"\033[1;3;31mRunning Voice2Voice Took... \n\t{time.time() - cp}s\033[0m")
         print("sampling rate: ",sampling_rate)
 
@@ -145,7 +146,7 @@ class TalkWithMe:
             print(f"\033[1;3;31mRunning Mesh2Talk Took... \n\t{time.time() - cp}s\033[0m")
             print(self.args["tts_param"]["output_path"],":",filename)
             save_wav(result_audio, sampling_rate, filename, self.args["tts_param"]["output_path"])
-            save_wav(result_audio, sampling_rate, filename, "./test_output")
+            # save_wav(result_audio, sampling_rate, filename, "./test_output")
 
             logger.info("Finish Process")
             print(f"\033[1;3;31mRunning Process Took... \n\t{time.time() - start}s\033[0m")
@@ -156,7 +157,7 @@ if __name__ == "__main__":
     sys.path.append('/home/elicer/talk2yourself/talk_module')
     main_model = TalkWithMe(conversation_only=True)
     image_path = "data/input_images/haerin.jpg"
-    input_audio_path = "data/audio_input/myquestion2.m4a"
+    input_audio_path = "data/audio_input/advice.m4a"
     face_name = "haerin"
     # main_model.make_fbx(image_path, face_name)
     main_model.conversation(input_audio_path, face_name)
