@@ -5,6 +5,7 @@ import numpy as np
 import os
 from agent import TalkWithMe
 from fastapi.responses import FileResponse
+from pydantic import BaseModel
 
 app = FastAPI()
 print("app loaded")
@@ -107,10 +108,21 @@ async def conversation_reset():
     model.reset_history()
     return {"status": "reset"}
 
+class EmotionModel(BaseModel):
+    value: int
+
+emotion_dict = {
+    1: "extremely happy and friendly. love user",
+    2: "happy",
+    3: "neutral",
+    4: "angry",
+    5: "extremely angry, annoying and absolutley not friendly",
+}
+
 @app.post("/emotion")
-async def emotion(emotion: str):
-    print(emotion)
-    model.change_emotion(emotion)
+async def emotion(emotion_body: EmotionModel):
+    print(emotion_body.value)
+    model.change_emotion(emotion_dict[emotion_body.value])
     return {"status": "emotion set"}
 
 

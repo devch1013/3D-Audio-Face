@@ -6,6 +6,7 @@ from langchain_openai import ChatOpenAI
 from langchain.chains import ConversationChain, LLMChain
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts.prompt import PromptTemplate
+import re
 
 
 ai_secret_file = "talk_module/LLM/keys.ini"
@@ -35,6 +36,7 @@ class ChatGPTConversation:
     def __call__(self, prompt):
         # self.conversation.memory.clear()
         text = self.conversation.predict(input=prompt, emotion=self.emotion)
+        text = re.sub(r'\[[^\]]*\]', '', text)
         return text
     
     def change_emotion(self, prompt):
