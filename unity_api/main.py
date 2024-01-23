@@ -102,6 +102,17 @@ async def conversation(audio: UploadFile):
 
     return {"id": rand_num}
 
+@app.post("/conversation/reset")
+async def conversation_reset():
+    model.reset_history()
+    return {"status": "reset"}
+
+@app.post("/emotion")
+async def emotion(emotion: str):
+    print(emotion)
+    model.change_emotion(emotion)
+    return {"status": "emotion set"}
+
 
 @app.get("/fbx/{fbx_id}", response_class=FileResponse)
 def get_fbx_file(fbx_id: str):

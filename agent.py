@@ -105,6 +105,12 @@ class TalkWithMe:
         logger.info("Finish Process")
         print(f"\033[1;3;31mRunning Process Took... \n\t{time.time() - start}s\033[0m")
         
+    def change_emotion(self, emotion):
+        self.voice2voice.change_emotion(emotion)
+        
+    def reset_history(self):
+        self.voice2voice.reset_history()
+        
         
     
     def __call__(self, image_path, input_audio_path, face_name):
