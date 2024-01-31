@@ -1,4 +1,4 @@
-Codes for audio driven 3D face generation
+### Codes for audio driven 3D face generation
 
 python version: 3.10.13
 
@@ -16,6 +16,15 @@ python version: 3.10.13
     modified : wf.write('map_Kd {}\n'.format(save_name + '.png'))
 
     since texturemap in pymeshlab only supports png files
+
+### install lfs
+curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+sudo apt-get update
+sudo apt-get install git-lfs
+git lfs install
+cd talk_module/EmotiVoice
+git clone https://www.modelscope.cn/syq163/outputs.git
+git clone https://www.modelscope.cn/syq163/WangZeJun.git
 
 백엔드 서버 실행
 ```
