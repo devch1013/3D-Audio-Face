@@ -115,8 +115,8 @@ emotion_dict = {
     1: "extremely happy and friendly. love user",
     2: "happy",
     3: "neutral",
-    4: "angry",
-    5: "extremely angry, annoying and absolutley not friendly",
+    4: "annoying and not friendly",
+    5: "extremely angry, annoying and absolutley not friendly. hate user",
 }
 
 @app.post("/emotion")
