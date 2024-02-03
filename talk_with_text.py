@@ -20,5 +20,5 @@ Choose the emotion of AI chatbot
     conversation_agent.change_emotion(emotion_dict[int(emotion)])
     print("Start conversation with AI chatbot")
     while True:
-        user_input = input("user: ")
+        user_input = input("User: ")
         print("AI: ",conversation_agent(user_input))
