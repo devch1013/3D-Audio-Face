@@ -17,7 +17,7 @@ os.environ.update({"OPENAI_API_KEY": openai_api_key})
 
 
 class ChatGPTConversation:
-    def __init__(self, template_file="emotion_template.txt"):
+    def __init__(self, template_file="emotion_template.txt", verbose=True):
         llm = ChatOpenAI(temperature=0.1, model="gpt-3.5-turbo")
         template_file = f"talk_module/LLM/templates/{template_file}"
         with open(template_file, "r") as f:
@@ -29,7 +29,7 @@ class ChatGPTConversation:
         self.conversation = LLMChain(
             prompt=prompt_template,
             llm=llm,
-            verbose=True,
+            verbose=verbose,
             memory=ConversationBufferMemory(memory_key="history", input_key="input"),
         )
 
