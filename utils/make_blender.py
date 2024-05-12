@@ -82,6 +82,15 @@ def make_blendshape(file_name:str, meme:str = "ply", folder_path:str="face_modul
 
     bpy.ops.object.join_shapes()
     bpy.ops.object.delete()
+    
+    for o in bpy.data.objects:
+        # Check for given object names
+        if o.name == "AvatarMesh_Neutral":
+            o.select_set(True)
+            o.data.use_auto_smooth = 0
+        # ob.data.auto_smooth_angle = math.radians(40)  # 40 degrees as radians
+
+    bpy.ops.object.shade_smooth()
 
     # Save the modified main PLY file
     # bpy.ops.wm.save_as_mainfile(filepath=f"data/result_blend/{file_name}.blend")

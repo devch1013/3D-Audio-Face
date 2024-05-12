@@ -74,7 +74,7 @@ class Voice2Voice:
         # answer = "To re-log into GitHub and push commits in a remote server, you will need to first log into your GitHub account. Then, you will need to navigate to the repository you want to push commits to."
         
         # init_emotion()
-        audio, rate = self.tts_model(answer, prompt=self.conversation_agent.emotion, speaker='92') #普通, 生气, 开心, 惊讶, 悲伤, 厌恶, 恐惧 -> 보통, 화, 즐거움, 놀라움, 슬픔, 혐오, 두려움
+        audio, rate = self.tts_model(answer, prompt=self.conversation_agent.emotion, speaker='984') #普通, 生气, 开心, 惊讶, 悲伤, 厌恶, 恐惧 -> 보통, 화, 즐거움, 놀라움, 슬픔, 혐오, 두려움
         ###### 프롬프트 안주면 알아서 answer가 프롬프트로 들어가는데 이렇게 해도 감정 반영된다고 써있긴함
         ###### 영어 프롬프트도 되긴하는데, 중국어가 더 잘되는거 같아서 일단 중국어로 냅둠.
         ###### Suggested Speaker \\\\ Males: 9000/984/985 \\\ Females: 65/92/102/225/1088/1093

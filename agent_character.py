@@ -41,37 +41,15 @@ class TalkWithMe:
     
         deterministic(42)
         
-        start = time.time()
-        if self.conversation_only == False:
-            logger.info("Load Image2Mesh Model")
-            cp = time.time()
-            self.img2mesh = HRN(output_dir='data/hrn_output')
-            print(f"\033[1;3;31mLoading Img2Mesh Took... \n\t{time.time() - cp}s\033[0m")
-        
-            logger.info("Load Mesh2Talk Model")
         cp = time.time()
 
-        self.mesh2talk  = Mesh2Talk(self.args)
-        print(f"\033[1;3;31mLoading Mesh2Talk Took... \n\t{time.time() - cp}s\033[0m")
-        
-        logger.info("Load Voice2Voice Model")
-        cp = time.time()
-        self.voice2voice = Voice2Voice(self.args)
-        print(f"\033[1;3;31mLoading Voice2Voice Took... \n\t{time.time() - cp}s\033[0m")
-        logger.info("Model Load Finished")
-        print(f"\033[1;3;31mLoading Models Took... \n\t{time.time() - start}s\033[0m")
     
     def make_fbx(self, image_path, face_name):
         start = time.time()
         
         with torch.no_grad():
 
-            logger.info("Make Mesh from Image")
-            cp = time.time()
-            self.img2mesh(face_name, image_path)
 
-            print(f"\033[1;3;31mRunning Image2Mesh Took... \n\t{time.time() - cp}s\033[0m")
-            
             logger.info("Make Blendshapes")
             cp = time.time()
             Mesh2Blendshape(os.path.join(self.args["mica_param"]["output_path"], f"{face_name}.ply"))
@@ -155,7 +133,7 @@ class TalkWithMe:
 if __name__ == "__main__":
     main_model = TalkWithMe(conversation_only=False)
     # image_list = ["junggook2", "benedict","benedict2", "brad", "tom", "jenny"]
-    image_list = ["musk"]
+    image_list = ["dwayne","dwayne2","dwayne3"]
     for face in image_list:
         image_path = f"data/input_images/{face}.jpg"
         face_name = f"{face}"
