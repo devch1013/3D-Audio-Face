@@ -16,7 +16,7 @@ __pycache__/
 corr**.txt
 landmarks**.txt
 **/landmarks/**.txt
-**.png
+
 **.gif
 **.whl
 **.blend
@@ -32,3 +32,5 @@ slurm-*
 .DS_Store
 **.pb
 **.ipynb
+**.png
+!/images/*.png
