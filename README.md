@@ -47,7 +47,7 @@ uvicorn unity_api.main:app --host 0.0.0.0
 ## Unity
 [다운로드 링크](https://drive.google.com/drive/folders/1bHYvi35AIMqvKqNAQv7O-TCWzR_NzCPS?usp=sharing)
 
-MainScript 컴포넌트 내의 Api Url을 백엔드 서버 주소로 변경
+MainScript 컴포넌트 내의 Api Url을 백엔드 서버 주소로 변경  
 ![image1](images/image2.png)
 
 
